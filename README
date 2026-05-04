@@ -1,0 +1,39 @@
+# Vaadin-harjoitustyö
+
+Tämä projekti on **Vaadin Web -ohjelmoinnin kurssin harjoitustyö**.  
+Sovellus on toteutettu **Vaadin + Spring Boot** -teknologioilla ja se toimii
+yksisivuisena SPA-sovelluksena.
+
+## Kuvaus
+
+Sovellus on liikuntakeskuksen hallintajärjestelmä, jossa voidaan hallita mm.
+ohjaajia, liikkujia ja liikuntatunteja. Sovelluksessa on toteutettu
+CRUD-toiminnot, relaatiot entiteettien välillä, suodattamista Criteria API:lla
+sekä käyttäjien autentikointi ja käyttöoikeudet.
+
+## Käytetyt teknologiat
+
+- Java 21
+- Spring Boot
+- Spring Data JPA
+- Spring Security
+- Vaadin 25
+- H2-tietokanta
+- Maven
+
+## Keskeiset ominaisuudet
+
+- CRUD-toiminnot käyttöliittymästä tietokantaan
+- Useita entiteettejä ja relaatiot (1:1, 1:N, M:N)
+- Dynaaminen haku Criteria API:lla
+- SPA-rakenne Vaadin AppLayoutilla
+- Autentikointi ja roolipohjaiset näkymät
+- Tiedoston lataus ja tallennus (ohjaajille)
+- CSV-tiedoston tuonti ja vienti
+- Responsiivinen käyttöliittymä
+
+## Käynnistys paikallisesti
+
+1. Kloonaa repository:
+   ```bash
+   git clone https://github.com/<käyttäjä>/vaadin-harjoitustyo.git
