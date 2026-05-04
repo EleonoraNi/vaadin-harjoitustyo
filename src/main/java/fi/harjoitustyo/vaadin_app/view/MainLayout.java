@@ -100,13 +100,25 @@ public class MainLayout extends AppLayout {
                                 "Liikuntatunnit", LiikuntatuntiListView.class);
                 tunnit.addComponentAsFirst(new Icon(VaadinIcon.CALENDAR));
                 tunnit.addClassName("nav-link");
+                
+                RouterLink jasenyydet = new RouterLink(
+                                "Jäsenyydet", JasenyysListView.class);
+                jasenyydet.addComponentAsFirst(new Icon(VaadinIcon.USER_CHECK));
+                jasenyydet.addClassName("nav-link");
+                
+                RouterLink quill = new RouterLink(
+                                "Quill Editor", QuillEditorView.class);
+                quill.addComponentAsFirst(new Icon(VaadinIcon.EDIT));
+                quill.addClassName("nav-link");
 
                 VerticalLayout drawerLayout = new VerticalLayout(
                                 liikkujat,
                                 ohjaajat,
                                 tunnit,
+                                jasenyydet,
                                 tuntihaku,
-                                ilmo);
+                                ilmo,
+                                quill);
 
                 drawerLayout.setPadding(true);
                 drawerLayout.setSpacing(true);
