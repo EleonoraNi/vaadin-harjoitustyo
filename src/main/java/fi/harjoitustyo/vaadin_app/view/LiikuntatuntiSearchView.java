@@ -146,6 +146,9 @@ public class LiikuntatuntiSearchView extends VerticalLayout
                 teksti.setPlaceholder(
                                 msg.getString("placeholder.text"));
 
+                TextField ohjaajaTeksti = new TextField("Ohjaaja tai erikoistuminen");
+                ohjaajaTeksti.setPlaceholder("Esim. Maija tai jooga");
+
                 DatePicker alkuPaiva = new DatePicker(msg.getString("field.startDate"));
 
                 DatePicker loppuPaiva = new DatePicker(msg.getString("field.endDate"));
@@ -172,6 +175,8 @@ public class LiikuntatuntiSearchView extends VerticalLayout
                         Long ohjaajaId = ohjaaja.getValue() != null
                                         ? ohjaaja.getValue().getId()
                                         : null;
+
+                        String ohjaajaTekstiValue = ohjaajaTeksti.getValue();
                         
                         new Thread(() -> {
 
@@ -184,7 +189,8 @@ public class LiikuntatuntiSearchView extends VerticalLayout
                                                 teksti.getValue(),
                                                 alku,
                                                 loppu,
-                                                ohjaajaId);
+                                                ohjaajaId,
+                                                ohjaajaTekstiValue);
 
                                 ui.access(() -> {
                                         grid.setItems(tulokset);
@@ -195,7 +201,7 @@ public class LiikuntatuntiSearchView extends VerticalLayout
                 });
 
                 HorizontalLayout layout = new HorizontalLayout(
-                                teksti, alkuPaiva, loppuPaiva, ohjaaja, hae);
+                                teksti, ohjaajaTeksti, alkuPaiva, loppuPaiva, ohjaaja, hae);
                 layout.setAlignItems(Alignment.END);
                 layout.setWidthFull();
                 layout.addClassName("search-container");

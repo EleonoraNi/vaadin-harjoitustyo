@@ -11,6 +11,7 @@ public interface LiikuntatuntiRepositoryCustom {
         String teksti,
         LocalDateTime alku,
         LocalDateTime loppu,
-        Long ohjaajaId
+        Long ohjaajaId,
+        String ohjaajaTeksti
     );
 }
