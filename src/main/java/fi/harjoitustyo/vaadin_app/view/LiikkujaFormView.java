@@ -1,5 +1,7 @@
 package fi.harjoitustyo.vaadin_app.view;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -20,10 +22,13 @@ import com.vaadin.flow.router.*;
 import fi.harjoitustyo.vaadin_app.entity.Jasenyys;
 import fi.harjoitustyo.vaadin_app.entity.Liikkuja;
 import fi.harjoitustyo.vaadin_app.service.LiikkujaService;
+import jakarta.annotation.security.RolesAllowed;
+import org.springframework.security.core.Authentication;
 
 @PageTitle("Liikkuja")
-@Route(value = "liikkuja")
-public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<Long> {
+@Route(value = "liikkuja", layout = MainLayout.class)
+@RolesAllowed({"ADMIN"})
+public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<Long>, BeforeEnterObserver {
 
     private final LiikkujaService liikkujaService;
 
@@ -152,4 +157,13 @@ public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<
             Notification.show("Poisto epäonnistui: " + ex.getMessage(), 5000, Notification.Position.MIDDLE);
         }
     }
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getAuthorities().stream().noneMatch(authority ->
+                 authority.getAuthority().equals("ROLE_ADMIN"))) {
+            event.rerouteTo(AccessDeniedView.class);
+        }
+    }
+    
 }

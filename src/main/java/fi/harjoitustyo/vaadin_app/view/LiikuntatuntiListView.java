@@ -2,6 +2,8 @@ package fi.harjoitustyo.vaadin_app.view;
 
 import java.time.format.DateTimeFormatter;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -9,15 +11,20 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import fi.harjoitustyo.vaadin_app.entity.Liikuntatunti;
 import fi.harjoitustyo.vaadin_app.service.LiikuntatuntiService;
+import jakarta.annotation.security.RolesAllowed;
+import org.springframework.security.core.Authentication;
 
 @PageTitle("Liikuntatunnit")
 @Route(value = "liikuntatunnit", layout = MainLayout.class)
-public class LiikuntatuntiListView extends VerticalLayout {
+@RolesAllowed({ "ADMIN", "SUPER" })
+public class LiikuntatuntiListView extends VerticalLayout implements BeforeEnterObserver {
 
         private final LiikuntatuntiService liikuntatuntiService;
         private final Grid<Liikuntatunti> grid = new Grid<>(Liikuntatunti.class, false);
@@ -105,5 +112,15 @@ public class LiikuntatuntiListView extends VerticalLayout {
 
         private void refresh() {
                 grid.setItems(liikuntatuntiService.findAllSortedByAlkuaika());
+        }
+
+        @Override
+        public void beforeEnter(BeforeEnterEvent event) {
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                if (authentication == null || authentication.getAuthorities().stream()
+                                .noneMatch(authority -> authority.getAuthority().equals("ROLE_SUPER")
+                                                || authority.getAuthority().equals("ROLE_ADMIN"))) {
+                        event.rerouteTo(AccessDeniedView.class);
+                }
         }
 }

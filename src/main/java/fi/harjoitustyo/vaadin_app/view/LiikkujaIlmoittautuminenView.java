@@ -15,7 +15,6 @@ import fi.harjoitustyo.vaadin_app.entity.Liikuntatunti;
 import fi.harjoitustyo.vaadin_app.entity.Liikkuja;
 import fi.harjoitustyo.vaadin_app.service.LiikuntatuntiService;
 import fi.harjoitustyo.vaadin_app.service.LiikkujaService;
-import fi.harjoitustyo.vaadin_app.view.AccessDeniedView;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

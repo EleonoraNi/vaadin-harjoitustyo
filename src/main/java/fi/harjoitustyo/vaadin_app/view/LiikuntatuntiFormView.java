@@ -3,6 +3,8 @@ package fi.harjoitustyo.vaadin_app.view;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -24,11 +26,14 @@ import fi.harjoitustyo.vaadin_app.entity.Liikuntatunti;
 import fi.harjoitustyo.vaadin_app.entity.Ohjaaja;
 import fi.harjoitustyo.vaadin_app.service.LiikuntatuntiService;
 import fi.harjoitustyo.vaadin_app.service.OhjaajaService;
+import jakarta.annotation.security.RolesAllowed;
+import org.springframework.security.core.Authentication;
 
 @PageTitle("Liikuntatunti")
-@Route(value = "liikuntatunti")
+@Route(value = "liikuntatunti", layout = MainLayout.class)
+@RolesAllowed({"ADMIN", "SUPER"})
 public class LiikuntatuntiFormView extends VerticalLayout
-        implements HasUrlParameter<Long> {
+        implements HasUrlParameter<Long>, BeforeEnterObserver {
 
     private final LiikuntatuntiService liikuntatuntiService;
     private final OhjaajaService ohjaajaService;
@@ -213,6 +218,14 @@ public class LiikuntatuntiFormView extends VerticalLayout
                     "Poisto epäonnistui: " + ex.getMessage(),
                     5000,
                     Notification.Position.MIDDLE);
+        }
+    }
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getAuthorities().stream().noneMatch(authority ->
+                authority.getAuthority().equals("ROLE_SUPER") || authority.getAuthority().equals("ROLE_ADMIN"))) {
+            event.rerouteTo(AccessDeniedView.class);
         }
     }
 }

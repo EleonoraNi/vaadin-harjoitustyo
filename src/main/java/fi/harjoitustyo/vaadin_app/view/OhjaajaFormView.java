@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -28,15 +30,17 @@ import com.vaadin.flow.server.StreamResource;
 
 import fi.harjoitustyo.vaadin_app.entity.Ohjaaja;
 import fi.harjoitustyo.vaadin_app.service.OhjaajaService;
+import jakarta.annotation.security.RolesAllowed;
+import org.springframework.security.core.Authentication;
 
 @PageTitle("Ohjaaja")
 @Route(value = "ohjaaja", layout = MainLayout.class)
+@RolesAllowed({ "ADMIN" })
 public class OhjaajaFormView extends VerticalLayout
-        implements HasUrlParameter<Long> {
+        implements HasUrlParameter<Long>, BeforeEnterObserver {
 
     private final OhjaajaService ohjaajaService;
-    private final BeanValidationBinder<Ohjaaja> binder =
-            new BeanValidationBinder<>(Ohjaaja.class);
+    private final BeanValidationBinder<Ohjaaja> binder = new BeanValidationBinder<>(Ohjaaja.class);
 
     private Ohjaaja current;
 
@@ -84,16 +88,13 @@ public class OhjaajaFormView extends VerticalLayout
                 return Files.newOutputStream(
                         target,
                         StandardOpenOption.CREATE,
-                        StandardOpenOption.TRUNCATE_EXISTING
-                );
+                        StandardOpenOption.TRUNCATE_EXISTING);
             } catch (IOException e) {
                 throw new RuntimeException("Tiedoston tallennus epäonnistui", e);
             }
         });
 
-        upload.addSucceededListener(e ->
-                Notification.show("Tiedosto ladattu")
-        );
+        upload.addSucceededListener(e -> Notification.show("Tiedosto ladattu"));
 
         // --- Ladatun tiedoston näyttö ---
         ladattuTiedostoTeksti = new Span();
@@ -111,7 +112,7 @@ public class OhjaajaFormView extends VerticalLayout
 
     @Override
     public void setParameter(BeforeEvent event,
-                             @OptionalParameter Long id) {
+            @OptionalParameter Long id) {
 
         if (id == null) {
             current = new Ohjaaja();
@@ -140,14 +141,13 @@ public class OhjaajaFormView extends VerticalLayout
                             Notification.show("Tiedostoa ei löytynyt");
                             return InputStream.nullInputStream();
                         }
-                    }
-            );
+                    });
 
             try {
                 resource.setContentType(
-                        Files.probeContentType(filePath)
-                );
-            } catch (IOException ignored) {}
+                        Files.probeContentType(filePath));
+            } catch (IOException ignored) {
+            }
 
             ladattuTiedostoTeksti.setText("Ohjaajalle ladattu tiedosto:");
             ladattuTiedostoLinkki.setText(filePath.getFileName().toString());
@@ -172,8 +172,7 @@ public class OhjaajaFormView extends VerticalLayout
         tallenna.addClickListener(e -> save());
         poista.addClickListener(e -> delete());
         peruuta.addClickListener(
-                e -> UI.getCurrent().navigate(OhjaajaListView.class)
-        );
+                e -> UI.getCurrent().navigate(OhjaajaListView.class));
 
         poista.setEnabled(false);
     }
@@ -182,16 +181,14 @@ public class OhjaajaFormView extends VerticalLayout
         FormLayout form = new FormLayout();
         form.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("0", 1),
-                new FormLayout.ResponsiveStep("600px", 2)
-        );
+                new FormLayout.ResponsiveStep("600px", 2));
         form.add(nimi, email, erikoistuminen, puhelin);
         form.setMaxWidth("800px");
         return form;
     }
 
     private HorizontalLayout buildButtons() {
-        HorizontalLayout buttons =
-                new HorizontalLayout(tallenna, poista, peruuta);
+        HorizontalLayout buttons = new HorizontalLayout(tallenna, poista, peruuta);
         buttons.setSpacing(true);
         return buttons;
     }
@@ -204,14 +201,12 @@ public class OhjaajaFormView extends VerticalLayout
             UI.getCurrent().navigate(OhjaajaListView.class);
         } catch (ValidationException ex) {
             Notification.show(
-                    "Tarkista kentät – validointi esti tallennuksen."
-            );
+                    "Tarkista kentät – validointi esti tallennuksen.");
         } catch (Exception ex) {
             Notification.show(
                     "Tallennus epäonnistui: " + ex.getMessage(),
                     5000,
-                    Notification.Position.MIDDLE
-            );
+                    Notification.Position.MIDDLE);
         }
     }
 
@@ -228,8 +223,17 @@ public class OhjaajaFormView extends VerticalLayout
             Notification.show(
                     "Poisto epäonnistui: " + ex.getMessage(),
                     5000,
-                    Notification.Position.MIDDLE
-            );
+                    Notification.Position.MIDDLE);
+        }
+    }
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getAuthorities().stream()
+                .noneMatch(authority -> 
+                         authority.getAuthority().equals("ROLE_ADMIN"))) {
+            event.rerouteTo(AccessDeniedView.class);
         }
     }
 }

@@ -7,16 +7,25 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import com.vaadin.flow.component.UI;
 
 import fi.harjoitustyo.vaadin_app.entity.Liikkuja;
 import fi.harjoitustyo.vaadin_app.service.LiikkujaService;
+import jakarta.annotation.security.RolesAllowed;
+import org.springframework.security.core.Authentication;
+
 
 @PageTitle("Liikkujat")
 @Route(value = "liikkujat", layout = MainLayout.class)
-public class LiikkujaListView extends VerticalLayout {
+@RolesAllowed({"ADMIN"})
+public class LiikkujaListView extends VerticalLayout implements BeforeEnterObserver {
 
     private final LiikkujaService liikkujaService;
     private final Grid<Liikkuja> grid = new Grid<>(Liikkuja.class, false);
@@ -93,5 +102,14 @@ public class LiikkujaListView extends VerticalLayout {
 
     private void refresh() {
         grid.setItems(liikkujaService.findAll());
+    }
+    
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getAuthorities().stream().noneMatch(authority ->
+                 authority.getAuthority().equals("ROLE_ADMIN"))) {
+            event.rerouteTo(AccessDeniedView.class);
+        }
     }
 }

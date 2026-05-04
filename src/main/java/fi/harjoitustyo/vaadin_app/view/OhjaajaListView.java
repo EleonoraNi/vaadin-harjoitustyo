@@ -8,11 +8,13 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fi.harjoitustyo.vaadin_app.entity.Ohjaaja;
 import fi.harjoitustyo.vaadin_app.service.OhjaajaService;
 import jakarta.annotation.security.RolesAllowed;
+import org.springframework.security.core.Authentication;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.theme.lumo.LumoUtility.Background;
@@ -28,11 +30,14 @@ import java.io.InputStreamReader;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import com.vaadin.flow.router.BeforeEnterObserver;
+
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @PageTitle("Ohjaajat")
 @Route(value = "ohjaajat", layout = MainLayout.class)
 @RolesAllowed("ADMIN")
-public class OhjaajaListView extends VerticalLayout {
+public class OhjaajaListView extends VerticalLayout implements BeforeEnterObserver {
 
     private final OhjaajaService ohjaajaService;
     private final Grid<Ohjaaja> grid = new Grid<>(Ohjaaja.class, false);
@@ -130,7 +135,7 @@ public class OhjaajaListView extends VerticalLayout {
             }
         });
 
-        HorizontalLayout toolbar = new HorizontalLayout(uusi, muokkaa,tuoCsv ,vieCsv);
+        HorizontalLayout toolbar = new HorizontalLayout(uusi, muokkaa, tuoCsv, vieCsv);
 
         toolbar.addClassNames(Margin.Bottom.MEDIUM, Padding.SMALL, BorderRadius.MEDIUM, BoxShadow.SMALL);
 
@@ -160,5 +165,14 @@ public class OhjaajaListView extends VerticalLayout {
 
     private void refresh() {
         grid.setItems(ohjaajaService.findAll());
+    }
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getAuthorities().stream()
+                .noneMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"))) {
+            event.rerouteTo(AccessDeniedView.class);
+        }
     }
 }
