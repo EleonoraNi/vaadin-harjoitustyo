@@ -32,10 +32,9 @@ public class LiikuntatuntiService {
             String teksti,
             LocalDateTime alku,
             LocalDateTime loppu,
-            Long ohjaajaId,
             String ohjaajaTeksti) {
         return repository.search(
-                teksti, alku, loppu, ohjaajaId, ohjaajaTeksti);
+                teksti, alku, loppu, ohjaajaTeksti);
     }
 
     @Transactional

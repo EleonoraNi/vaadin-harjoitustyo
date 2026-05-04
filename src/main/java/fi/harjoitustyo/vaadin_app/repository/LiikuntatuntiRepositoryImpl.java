@@ -25,7 +25,6 @@ public class LiikuntatuntiRepositoryImpl
             String teksti,
             LocalDateTime alku,
             LocalDateTime loppu,
-            Long ohjaajaId,
             String ohjaajaTeksti) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Liikuntatunti> cq = cb.createQuery(Liikuntatunti.class);
@@ -57,15 +56,8 @@ public class LiikuntatuntiRepositoryImpl
         }
 
         Join<Liikuntatunti, Object> ohjaajaJoin = null;
-        if (ohjaajaId != null || (ohjaajaTeksti != null && !ohjaajaTeksti.isBlank())) {
+        if ( (ohjaajaTeksti != null && !ohjaajaTeksti.isBlank())) {
             ohjaajaJoin = tunti.join("ohjaaja");
-        }
-
-        if (ohjaajaId != null) {
-            predicates.add(
-                    cb.equal(
-                            ohjaajaJoin.get("id"),
-                            ohjaajaId));
         }
 
         if (ohjaajaTeksti != null && !ohjaajaTeksti.isBlank()) {

@@ -153,11 +153,6 @@ public class LiikuntatuntiSearchView extends VerticalLayout
 
                 DatePicker loppuPaiva = new DatePicker(msg.getString("field.endDate"));
 
-                ComboBox<Ohjaaja> ohjaaja = new ComboBox<>(msg.getString("field.instructor"));
-                ohjaaja.setItems(ohjaajaService.findAll());
-                ohjaaja.setItemLabelGenerator(Ohjaaja::getNimi);
-                ohjaaja.setClearButtonVisible(true);
-
                 Button hae = new Button(msg.getString("button.search"));
 
                 hae.addClickListener(e -> {
@@ -170,10 +165,6 @@ public class LiikuntatuntiSearchView extends VerticalLayout
 
                         LocalDateTime loppu = loppuPaiva.getValue() != null
                                         ? loppuPaiva.getValue().atTime(23, 59)
-                                        : null;
-
-                        Long ohjaajaId = ohjaaja.getValue() != null
-                                        ? ohjaaja.getValue().getId()
                                         : null;
 
                         String ohjaajaTekstiValue = ohjaajaTeksti.getValue();
@@ -189,7 +180,6 @@ public class LiikuntatuntiSearchView extends VerticalLayout
                                                 teksti.getValue(),
                                                 alku,
                                                 loppu,
-                                                ohjaajaId,
                                                 ohjaajaTekstiValue);
 
                                 ui.access(() -> {
@@ -201,7 +191,7 @@ public class LiikuntatuntiSearchView extends VerticalLayout
                 });
 
                 HorizontalLayout layout = new HorizontalLayout(
-                                teksti, ohjaajaTeksti, alkuPaiva, loppuPaiva, ohjaaja, hae);
+                                teksti, ohjaajaTeksti, alkuPaiva, loppuPaiva, hae);
                 layout.setAlignItems(Alignment.END);
                 layout.setWidthFull();
                 layout.addClassName("search-container");
