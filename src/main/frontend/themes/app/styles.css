@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+/*Navigaatiolinkki perus*/
+a.nav-link {
+    display: flex;
+    align-items: center;
+    gap: var(--lumo-space-s);
+    padding: var(--lumo-space-s);
+    border-radius: var(--lumo-border-radius-m);
+    text-decoration: none;
+    color: var(--lumo-body-text-color);
+    transition: background-color 0.2s ease;
+}
+
+/* Hover-efekti */
+a.nav-link:hover {
+    background-color: var(--lumo-contrast-10pct);
+}
+
+/* ✅ AKTIIVINEN NÄKYMÄ */
+a.nav-link[highlight] {
+    background-color: var(--lumo-primary-color-10pct);
+    font-weight: 600;
+}
+
+/*Lisää napin muotoilut*/
+.primary-action {
+    background-color: #7f26ec;
+    /* Sininen taustaväri */
+    color: white;
+    /* Valkoinen tekstiväri */
+    font-weight: 600;
+    /* Paksumpi fontti */
+}
+
+:root {
+    --lumo-font-family: 'Inter', sans-serif;
+    --lumo-primary-color: #7f26ec;
+
+    --lumo-primary-text-color: #7f26ec;
+    --lumo-primary-color-10pct: rgba(127, 38, 236, 0.1);
+
+    --lumo-body-text-color: #1f2933;
+    --lumo-base-color: #f9fafb;
+
+}

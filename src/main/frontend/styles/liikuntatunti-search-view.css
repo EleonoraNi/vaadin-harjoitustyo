@@ -1,0 +1,23 @@
+/* LiikuntatuntiSearchView – näkymäkohtaiset tyylit */
+
+.search-container {
+    background-color: var(--lumo-contrast-5pct);
+    padding: var(--lumo-space-m);
+    border-radius: var(--lumo-border-radius-m);
+}
+
+.search-container vaadin-text-field,
+.search-container vaadin-date-picker,
+.search-container vaadin-combo-box {
+    width: 100%;
+}
+
+.search-grid {
+    box-shadow: var(--lumo-box-shadow-s);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.search-grid:hover {
+    box-shadow: var(--lumo-box-shadow-m);
+    transform: scale(1.01);
+}
