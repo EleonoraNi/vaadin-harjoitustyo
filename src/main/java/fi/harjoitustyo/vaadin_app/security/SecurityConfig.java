@@ -2,6 +2,7 @@ package fi.harjoitustyo.vaadin_app.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -13,6 +14,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(jsr250Enabled = true)
 public class SecurityConfig {
 
     @Bean
@@ -21,14 +23,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/VAADIN/**",
-                                "/frontend/**",
-                                "/images/**",
-                                "/icons/**",
-                                "/manifest.webmanifest",
-                                "/sw.js",
-                                "/offline.html")
+                                "/login",
+                                "/logout",
+                                "/access-denied")
                         .permitAll()
+                        .requestMatchers("/Ilmoittautuminen", "/Ilmoittautuminen/**")
+                        .hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .defaultSuccessUrl("/", true)
@@ -46,6 +46,10 @@ public class SecurityConfig {
                 User.withUsername("admin")
                         .password(passwordEncoder().encode("admin123"))
                         .roles("ADMIN")
+                        .build(),
+                User.withUsername("super")
+                        .password(passwordEncoder().encode("super123"))
+                        .roles("SUPER")
                         .build(),
                 User.withUsername("user")
                         .password(passwordEncoder().encode("user123"))

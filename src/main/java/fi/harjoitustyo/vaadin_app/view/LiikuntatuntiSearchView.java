@@ -29,9 +29,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import jakarta.annotation.security.RolesAllowed;
+
 @CssImport("./styles/liikuntatunti-search-view.css")
 @PageTitle("Tuntihaku")
 @Route(value = "", layout = MainLayout.class)
+@RolesAllowed({"USER","SUPER", "ADMIN"})
 public class LiikuntatuntiSearchView extends VerticalLayout
                 implements BeforeEnterObserver {
 

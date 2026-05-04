@@ -6,12 +6,13 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.RouterLink;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @CssImport("./themes/app/styles.css")
 public class MainLayout extends AppLayout {
@@ -37,10 +38,16 @@ public class MainLayout extends AppLayout {
                         getUI().ifPresent(ui -> ui.getPage().setLocation("/logout"));
                 });
 
+                Span userInfo = new Span(getCurrentUserInfo());
+                userInfo.getStyle()
+                                .set("font-size", "var(--lumo-font-size-s)")
+                                .set("color", "var(--lumo-secondary-text-color)");
+                
                 // ✅ YHDISTÄ KAIKKI SAMAAN RIVIIN
                 com.vaadin.flow.component.orderedlayout.HorizontalLayout headerLayout = new com.vaadin.flow.component.orderedlayout.HorizontalLayout(
                                 drawerToggle,
                                 title,
+                                userInfo,
                                 logoutButton);
 
                 headerLayout.setWidthFull();
@@ -54,6 +61,18 @@ public class MainLayout extends AppLayout {
                                 .set("padding", "var(--lumo-space-m)");
 
                 addToNavbar(headerLayout);
+        }
+
+        private String getCurrentUserInfo() {
+                Authentication auth = SecurityContextHolder
+                                .getContext()
+                                .getAuthentication();
+
+                if (auth == null || !auth.isAuthenticated()) {
+                        return "";
+                }
+
+                return "Kirjautunut: " +auth.getName();
         }
 
         private void createDrawer() {
