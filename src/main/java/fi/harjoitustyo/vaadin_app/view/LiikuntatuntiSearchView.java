@@ -7,6 +7,7 @@ import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -15,7 +16,6 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
-
 
 import fi.harjoitustyo.vaadin_app.entity.Liikuntatunti;
 import fi.harjoitustyo.vaadin_app.entity.Ohjaaja;
@@ -34,7 +34,7 @@ import jakarta.annotation.security.RolesAllowed;
 @CssImport("./styles/liikuntatunti-search-view.css")
 @PageTitle("Tuntihaku")
 @Route(value = "", layout = MainLayout.class)
-@RolesAllowed({"USER","SUPER", "ADMIN"})
+@RolesAllowed({ "USER", "SUPER", "ADMIN" })
 public class LiikuntatuntiSearchView extends VerticalLayout
                 implements BeforeEnterObserver {
 
@@ -93,7 +93,7 @@ public class LiikuntatuntiSearchView extends VerticalLayout
                 ResourceBundle msg = messages();
                 H2 title = new H2(msg.getString("title.search"));
                 title.addClassName("search-title");
-                
+
                 add(
                                 buildLanguageSwitcher(),
                                 title,
@@ -158,6 +158,9 @@ public class LiikuntatuntiSearchView extends VerticalLayout
                 Button hae = new Button(msg.getString("button.search"));
 
                 hae.addClickListener(e -> {
+                        UI ui = UI.getCurrent();
+                        Notification.show("Haku käynnissä...");
+
                         LocalDateTime alku = alkuPaiva.getValue() != null
                                         ? alkuPaiva.getValue().atStartOfDay()
                                         : null;
@@ -169,13 +172,26 @@ public class LiikuntatuntiSearchView extends VerticalLayout
                         Long ohjaajaId = ohjaaja.getValue() != null
                                         ? ohjaaja.getValue().getId()
                                         : null;
+                        
+                        new Thread(() -> {
 
-                        grid.setItems(
-                                        liikuntatuntiService.search(
-                                                        teksti.getValue(),
-                                                        alku,
-                                                        loppu,
-                                                        ohjaajaId));
+                                try {
+                                        Thread.sleep(3000); // TESTIIN
+                                } catch (Exception ex) {
+                                }
+
+                                var tulokset = liikuntatuntiService.search(
+                                                teksti.getValue(),
+                                                alku,
+                                                loppu,
+                                                ohjaajaId);
+
+                                ui.access(() -> {
+                                        grid.setItems(tulokset);
+                                        Notification.show("Haku valmis");
+                                });
+                        }).start();
+
                 });
 
                 HorizontalLayout layout = new HorizontalLayout(
