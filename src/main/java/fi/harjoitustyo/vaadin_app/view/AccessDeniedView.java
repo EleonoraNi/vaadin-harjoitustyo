@@ -6,7 +6,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Paragraph;
 
-@Route("access-denied")
+@Route(value = "access-denied", layout = MainLayout.class)
 @PageTitle("Ei käyttöoikeutta")
 public class AccessDeniedView extends VerticalLayout {
 
