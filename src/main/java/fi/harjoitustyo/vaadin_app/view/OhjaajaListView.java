@@ -36,7 +36,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 @PageTitle("Ohjaajat")
 @Route(value = "ohjaajat", layout = MainLayout.class)
-@RolesAllowed("ADMIN")
+@RolesAllowed({"ADMIN"})
 public class OhjaajaListView extends VerticalLayout implements BeforeEnterObserver {
 
     private final OhjaajaService ohjaajaService;

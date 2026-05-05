@@ -18,7 +18,6 @@ import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 
 import fi.harjoitustyo.vaadin_app.entity.Liikuntatunti;
-import fi.harjoitustyo.vaadin_app.entity.Ohjaaja;
 import fi.harjoitustyo.vaadin_app.service.LiikuntatuntiService;
 import fi.harjoitustyo.vaadin_app.service.OhjaajaService;
 
@@ -33,7 +32,7 @@ import jakarta.annotation.security.RolesAllowed;
 
 @CssImport("./styles/liikuntatunti-search-view.css")
 @PageTitle("Tuntihaku")
-@Route(value = "", layout = MainLayout.class)
+@Route(value = "tuntihaku", layout = MainLayout.class)
 @RolesAllowed({ "USER", "SUPER", "ADMIN" })
 public class LiikuntatuntiSearchView extends VerticalLayout
                 implements BeforeEnterObserver {
@@ -120,11 +119,11 @@ public class LiikuntatuntiSearchView extends VerticalLayout
          */
         private HorizontalLayout buildLanguageSwitcher() {
 
-                Button fi = new Button("FI", e -> UI.getCurrent().navigate("",
+                Button fi = new Button("FI", e -> UI.getCurrent().navigate("tuntihaku",
                                 new QueryParameters(
                                                 Map.of("lang", List.of("fi")))));
 
-                Button en = new Button("EN", e -> UI.getCurrent().navigate("",
+                Button en = new Button("EN", e -> UI.getCurrent().navigate("tuntihaku",
                                 new QueryParameters(
                                                 Map.of("lang", List.of("en")))));
 

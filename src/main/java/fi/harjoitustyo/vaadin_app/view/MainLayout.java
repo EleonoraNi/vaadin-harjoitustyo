@@ -12,7 +12,9 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.RouterLink;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import java.util.Collection;
 
 @CssImport("./themes/app/styles.css")
 public class MainLayout extends AppLayout {
@@ -75,53 +77,73 @@ public class MainLayout extends AppLayout {
                 return "Kirjautunut: " +auth.getName();
         }
 
+        private boolean hasRole(String role) {
+                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                if (auth == null) {
+                        return false;
+                }
+                Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+                return authorities.stream()
+                                .anyMatch(a -> a.getAuthority().equals("ROLE_" + role));
+        }
+
         private void createDrawer() {
-                RouterLink ilmo = new RouterLink(
-                                "Ilmoittautuminen", LiikkujaIlmoittautuminenView.class);
-                ilmo.addComponentAsFirst(new Icon(VaadinIcon.CLIPBOARD_CHECK));
-                ilmo.addClassName("nav-link");
-
-                RouterLink ohjaajat = new RouterLink(
-                                "Ohjaajat", OhjaajaListView.class);
-                ohjaajat.addComponentAsFirst(new Icon(VaadinIcon.USER));
-                ohjaajat.addClassName("nav-link");
-
-                RouterLink tuntihaku = new RouterLink(
-                                "Tuntihaku", LiikuntatuntiSearchView.class);
-                tuntihaku.addComponentAsFirst(new Icon(VaadinIcon.SEARCH));
-                tuntihaku.addClassName("nav-link");
-
-                RouterLink liikkujat = new RouterLink(
-                                "Liikkujat", LiikkujaListView.class);
-                liikkujat.addComponentAsFirst(new Icon(VaadinIcon.USERS));
-                liikkujat.addClassName("nav-link");
-
-                RouterLink tunnit = new RouterLink(
-                                "Liikuntatunnit", LiikuntatuntiListView.class);
-                tunnit.addComponentAsFirst(new Icon(VaadinIcon.CALENDAR));
-                tunnit.addClassName("nav-link");
-                
-                RouterLink jasenyydet = new RouterLink(
-                                "Jäsenyydet", JasenyysListView.class);
-                jasenyydet.addComponentAsFirst(new Icon(VaadinIcon.USER_CHECK));
-                jasenyydet.addClassName("nav-link");
-                
-                RouterLink quill = new RouterLink(
-                                "Quill Editor", QuillEditorView.class);
-                quill.addComponentAsFirst(new Icon(VaadinIcon.EDIT));
-                quill.addClassName("nav-link");
-
-                VerticalLayout drawerLayout = new VerticalLayout(
-                                liikkujat,
-                                ohjaajat,
-                                tunnit,
-                                jasenyydet,
-                                tuntihaku,
-                                ilmo,
-                                quill);
-
+                VerticalLayout drawerLayout = new VerticalLayout();
                 drawerLayout.setPadding(true);
                 drawerLayout.setSpacing(true);
+
+                // HOME - näkee kaikki
+                RouterLink home = new RouterLink("Etusivu", HomeView.class);
+                home.addComponentAsFirst(new Icon(VaadinIcon.HOME));
+                home.addClassName("nav-link");
+                drawerLayout.add(home);
+
+                // TUNTIHAKU - USER, SUPER, ADMIN
+                if (hasRole("USER") || hasRole("SUPER") || hasRole("ADMIN")) {
+                        RouterLink tuntihaku = new RouterLink("Tuntihaku", LiikuntatuntiSearchView.class);
+                        tuntihaku.addComponentAsFirst(new Icon(VaadinIcon.SEARCH));
+                        tuntihaku.addClassName("nav-link");
+                        drawerLayout.add(tuntihaku);
+                }
+
+                // ILMOITTAUTUMINEN - USER, SUPER, ADMIN
+                if (hasRole("USER") || hasRole("ADMIN")) {
+                        RouterLink ilmo = new RouterLink("Ilmoittautuminen", LiikkujaIlmoittautuminenView.class);
+                        ilmo.addComponentAsFirst(new Icon(VaadinIcon.CLIPBOARD_CHECK));
+                        ilmo.addClassName("nav-link");
+                        drawerLayout.add(ilmo);
+                }
+
+                // LIIKUNTATUNNIT - SUPER, ADMIN
+                if (hasRole("SUPER") || hasRole("ADMIN")) {
+                        RouterLink tunnit = new RouterLink("Liikuntatunnit", LiikuntatuntiListView.class);
+                        tunnit.addComponentAsFirst(new Icon(VaadinIcon.CALENDAR));
+                        tunnit.addClassName("nav-link");
+                        drawerLayout.add(tunnit);
+                }
+
+                // ADMIN näkymät
+                if (hasRole("ADMIN")) {
+                        RouterLink liikkujat = new RouterLink("Liikkujat", LiikkujaListView.class);
+                        liikkujat.addComponentAsFirst(new Icon(VaadinIcon.USERS));
+                        liikkujat.addClassName("nav-link");
+                        drawerLayout.add(liikkujat);
+
+                        RouterLink ohjaajat = new RouterLink("Ohjaajat", OhjaajaListView.class);
+                        ohjaajat.addComponentAsFirst(new Icon(VaadinIcon.USER));
+                        ohjaajat.addClassName("nav-link");
+                        drawerLayout.add(ohjaajat);
+
+                        RouterLink jasenyydet = new RouterLink("Jäsenyydet", JasenyysListView.class);
+                        jasenyydet.addComponentAsFirst(new Icon(VaadinIcon.USER_CHECK));
+                        jasenyydet.addClassName("nav-link");
+                        drawerLayout.add(jasenyydet);
+
+                        RouterLink quill = new RouterLink("Quill Editor", QuillEditorView.class);
+                        quill.addComponentAsFirst(new Icon(VaadinIcon.EDIT));
+                        quill.addClassName("nav-link");
+                        drawerLayout.add(quill);
+                }
 
                 addToDrawer(drawerLayout);
         }

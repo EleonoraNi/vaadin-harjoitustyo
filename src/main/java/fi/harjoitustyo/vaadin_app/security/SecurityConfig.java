@@ -2,15 +2,14 @@ package fi.harjoitustyo.vaadin_app.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
 @EnableWebSecurity
@@ -25,10 +24,42 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/login",
                                 "/logout",
-                                "/access-denied")
+                                "/access-denied",
+                                "/register",
+                                "/register/**",
+                                "/",
+                                "/VAADIN/**")
                         .permitAll()
-                        .requestMatchers("/Ilmoittautuminen", "/Ilmoittautuminen/**")
-                        .hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(
+                                "/Ilmoittautuminen",
+                                "/Ilmoittautuminen/**",
+                                "/Tuntihaku",
+                                "/Tuntihaku/**")
+                        .hasAnyRole("USER", "SUPER", "ADMIN")
+                        .requestMatchers(
+                                "/Liikuntatunnit",
+                                "/Liikuntatunnit/**",
+                                "/LiikuntatuntiForm",
+                                "/LiikuntatuntiForm/**")
+                        .hasAnyRole("SUPER", "ADMIN")
+                        .requestMatchers(
+                                "/Ohjaajat",
+                                "/Ohjaajat/**",
+                                "/OhjaajaForm",
+                                "/OhjaajaForm/**",
+                                "/Liikkujat",
+                                "/Liikkujat/**",
+                                "/LiikkujaForm",
+                                "/LiikkujaForm/**",
+                                "/Jäsenyydet",
+                                "/Jäsenyydet/**",
+                                "/JasenyysForm",
+                                "/JasenyysForm/**",
+                                "/Quill",
+                                "/Quill/**",
+                                "/AdminPanel",
+                                "/AdminPanel/**")
+                        .hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .defaultSuccessUrl("/", true)
@@ -41,24 +72,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        return new InMemoryUserDetailsManager(
-                User.withUsername("admin")
-                        .password(passwordEncoder().encode("admin123"))
-                        .roles("ADMIN")
-                        .build(),
-                User.withUsername("super")
-                        .password(passwordEncoder().encode("super123"))
-                        .roles("SUPER")
-                        .build(),
-                User.withUsername("user")
-                        .password(passwordEncoder().encode("user123"))
-                        .roles("USER")
-                        .build());
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 }
