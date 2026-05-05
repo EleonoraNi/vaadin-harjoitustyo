@@ -16,16 +16,17 @@ public class HomeView extends VerticalLayout {
 
         H1 title = new H1("Tervetuloa Liikuntakeskus-sovellukseen!");
         Paragraph welcome = new Paragraph(
-                "Tämä on Vaadin + Spring Boot -pohjainen harjoitustyö. " +
-                "Sovelluksessa voit hallita liikuntakeskuksen aktiviteeteja, ohjaajia ja jäsenyyksiä."
+                "Tämä on Java web-ohjelmointi kurssin Vaadin harjoitustyö.\n" +
+                "Sovelluksessa voidaan lisätä, muokata, poistaa ja hakea liikuntatunteja, liikkujia, jäsenyystietoja sekä ohjaajia."       
         );
+        welcome.getStyle().set("white-space", "pre-line");
 
         H1 features = new H1("Saatavilla olevat toiminnot:");
         Paragraph userFeatures = new Paragraph(
-                "USER-rooli: Voit osallistua tuntihaun avulla liikuntatunteihin ja ilmoittautua."
+                "USER-rooli: Voit hakea liikuntatunteja ja ilmoittautua niihin."
         );
         Paragraph superFeatures = new Paragraph(
-                "SUPER-rooli: Lisäksi voit hallita liikuntatunteja ja katso niiden tietoja."
+                "SUPER-rooli: Voit hakea, lisätä, muokata ja poistaa liikuntatunteja"
         );
         Paragraph adminFeatures = new Paragraph(
                 "ADMIN-rooli: Pääset kaikkiin sovelluksen ominaisuuksiin."

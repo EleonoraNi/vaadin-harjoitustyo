@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-
+import fi.harjoitustyo.vaadin_app.entity.Liikkuja;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,12 +43,14 @@ public class User {
 
     // Many-to-Many relationship with roles
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "liikkuja_id")
+    private Liikkuja liikkuja;
+
+
 
     public User() {
     }
@@ -143,7 +145,14 @@ public class User {
     public void removeRole(Role role) {
         this.roles.remove(role);
     }
+        public Liikkuja getLiikkuja() {
+        return liikkuja;
+    }
 
+    public void setLiikkuja(Liikkuja liikkuja) {
+        this.liikkuja = liikkuja;
+    }
+    
     @Override
     public String toString() {
         return "User{" +

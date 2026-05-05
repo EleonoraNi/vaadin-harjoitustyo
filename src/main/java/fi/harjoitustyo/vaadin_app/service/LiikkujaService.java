@@ -28,7 +28,10 @@ public class LiikkujaService {
     public Optional<Liikkuja> findById(Long id) {
         return repository.findById(id);
     }
-
+    public Optional<Liikkuja> findByUsername(String username) {
+        return repository.findByUser_Username(username);
+    }
+    
     @Transactional
     public Liikkuja save(Liikkuja liikkuja) {
         return repository.save(liikkuja);
@@ -66,5 +69,7 @@ public class LiikkujaService {
         // ✅ TALLENNA OMISTAVA PUOLI
         liikuntatuntiRepository.save(managedTunti);
     }
+    
+
 
 }

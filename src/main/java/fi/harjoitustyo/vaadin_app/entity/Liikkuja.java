@@ -2,7 +2,7 @@ package fi.harjoitustyo.vaadin_app.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-
+import fi.harjoitustyo.vaadin_app.entity.User;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,7 +15,7 @@ public class Liikkuja {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Version
     private Long version;
 
@@ -45,6 +45,10 @@ public class Liikkuja {
     // M:N Liikuntatunnit
     @ManyToMany(mappedBy = "liikkujat")
     private Set<Liikuntatunti> liikuntatunnit = new HashSet<>();
+
+    @OneToOne(mappedBy = "liikkuja")
+    private User user;
+
 
     public Liikkuja() {
     }
@@ -112,4 +116,13 @@ public class Liikkuja {
     public void setLiikuntatunnit(Set<Liikuntatunti> liikuntatunnit) {
         this.liikuntatunnit = liikuntatunnit;
     }
+    
+        public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
 }

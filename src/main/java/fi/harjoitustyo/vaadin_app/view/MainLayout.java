@@ -1,15 +1,20 @@
 package fi.harjoitustyo.vaadin_app.view;
 
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.router.RouterLayout;
 import com.vaadin.flow.router.RouterLink;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,12 +22,34 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Collection;
 
 @CssImport("./themes/app/styles.css")
-public class MainLayout extends AppLayout {
+public class MainLayout extends AppLayout implements RouterLayout {
+
+        private VerticalLayout content;
+
+        private VerticalLayout mainContent;
+        private Footer footer;
 
         public MainLayout() {
                 createHeader();
                 createDrawer();
-                createFooter();
+
+                mainContent = new VerticalLayout();
+                mainContent.setSizeFull();
+                mainContent.setPadding(true);
+                mainContent.setSpacing(true);
+
+                footer = createFooter();
+
+                VerticalLayout wrapper = new VerticalLayout();
+                wrapper.setSizeFull(); // ✅ koko viewport
+                wrapper.setWidthFull(); // ✅ koko leveys
+                wrapper.setPadding(false);
+                wrapper.setSpacing(false);
+
+                wrapper.add(mainContent, footer);
+                wrapper.expand(mainContent); // ✅ työntää footerin alas
+
+                setContent(wrapper);
         }
 
         private void createHeader() {
@@ -36,21 +63,46 @@ public class MainLayout extends AppLayout {
                                 .set("margin", "0")
                                 .set("color", "var(--lumo-primary-color)");
 
-                Button logoutButton = new Button("Kirjaudu ulos", e -> {
-                        getUI().ifPresent(ui -> ui.getPage().setLocation("/logout"));
-                });
+                Button authButton;
+                Button registerButton = null;
+
+                if (isUserLoggedIn()) {
+                        authButton = new Button("Kirjaudu ulos", e -> {
+                                getUI().ifPresent(ui -> ui.getPage().setLocation("/logout"));
+                        });
+                } else {
+                        registerButton = new Button("Rekisteröidy", e -> {
+                                getUI().ifPresent(ui -> ui.navigate("register"));
+                        });
+
+                        authButton = new Button("Kirjaudu", e -> {
+                                getUI().ifPresent(ui -> ui.getPage().setLocation("/login"));
+                        });
+                }
 
                 Span userInfo = new Span(getCurrentUserInfo());
                 userInfo.getStyle()
                                 .set("font-size", "var(--lumo-font-size-s)")
                                 .set("color", "var(--lumo-secondary-text-color)");
-                
+
                 // ✅ YHDISTÄ KAIKKI SAMAAN RIVIIN
-                com.vaadin.flow.component.orderedlayout.HorizontalLayout headerLayout = new com.vaadin.flow.component.orderedlayout.HorizontalLayout(
-                                drawerToggle,
-                                title,
-                                userInfo,
-                                logoutButton);
+
+                HorizontalLayout headerLayout;
+
+                if (registerButton != null) {
+                        headerLayout = new HorizontalLayout(
+                                        drawerToggle,
+                                        title,
+                                        userInfo,
+                                        registerButton,
+                                        authButton);
+                } else {
+                        headerLayout = new HorizontalLayout(
+                                        drawerToggle,
+                                        title,
+                                        userInfo,
+                                        authButton);
+                }
 
                 headerLayout.setWidthFull();
                 headerLayout.setAlignItems(
@@ -65,6 +117,17 @@ public class MainLayout extends AppLayout {
                 addToNavbar(headerLayout);
         }
 
+        private boolean isUserLoggedIn() {
+                Authentication auth = SecurityContextHolder
+                                .getContext()
+                                .getAuthentication();
+
+                return auth != null
+                                && auth.isAuthenticated()
+                                && !(auth.getPrincipal() instanceof String
+                                                && auth.getPrincipal().equals("anonymousUser"));
+        }
+
         private String getCurrentUserInfo() {
                 Authentication auth = SecurityContextHolder
                                 .getContext()
@@ -74,7 +137,7 @@ public class MainLayout extends AppLayout {
                         return "";
                 }
 
-                return "Kirjautunut: " +auth.getName();
+                return "Kirjautunut: " + auth.getName();
         }
 
         private boolean hasRole(String role) {
@@ -148,14 +211,27 @@ public class MainLayout extends AppLayout {
                 addToDrawer(drawerLayout);
         }
 
-        private void createFooter() {
+        private Footer createFooter() {
                 Footer footer = new Footer();
-                footer.add(new Span("© 2026 Eleonora Niskanen"));
+                footer.setWidthFull();
 
-                footer.getStyle()
-                                .set("padding", "var(--lumo-space-m)")
-                                .set("font-size", "var(--lumo-font-size-s)");
+                footer.add(
+                                new Span("© 2026 Eleonora Niskanen"),
+                                new Span("Vaadin + Spring Boot -harjoitustyö"),
+                                new Anchor("https://www.savonia.fi", "Savonia AMK"));
 
-                addToDrawer(footer);
+                footer.addClassName("app-footer");
+                return footer;
+
         }
+
+        @Override
+        public void showRouterLayoutContent(HasElement content) {
+                mainContent.removeAll();
+
+                if (content instanceof Component) {
+                        mainContent.add((Component) content);
+                }
+        }
+
 }

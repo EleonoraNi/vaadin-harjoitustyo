@@ -14,10 +14,18 @@
 
 .search-grid {
     box-shadow: var(--lumo-box-shadow-s);
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    transition: box-shadow 0.3s ease, transform 0.3s ease, outline 0.3s ease;
 }
 
 .search-grid:hover {
-    box-shadow: var(--lumo-box-shadow-m);
-    transform: scale(1.01);
+    box-shadow: 0 0 0 4px blue;
+    transform: scale(1.03);
 }
+
+/* VIHREÄ = focus syötekentissä */
+.search-container vaadin-text-field:focus-within,
+.search-container vaadin-date-picker:focus-within,
+.search-container vaadin-combo-box:focus-within {
+  box-shadow: 0 0 0 3px green;
+}
+

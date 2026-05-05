@@ -16,19 +16,24 @@ import fi.harjoitustyo.vaadin_app.entity.Liikkuja;
 import fi.harjoitustyo.vaadin_app.service.LiikuntatuntiService;
 import fi.harjoitustyo.vaadin_app.service.LiikkujaService;
 import jakarta.annotation.security.RolesAllowed;
+
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @Route(value = "Ilmoittautuminen", layout = MainLayout.class)
 @PageTitle("Ilmoittautuminen liikuntatunnille")
-@RolesAllowed({"ROLE_USER", "ROLE_SUPER", "ROLE_ADMIN"})
+@RolesAllowed({ "ROLE_USER", "ROLE_SUPER", "ROLE_ADMIN" })
 public class LiikkujaIlmoittautuminenView extends VerticalLayout implements BeforeEnterObserver {
 
     private final LiikkujaService liikkujaService;
     private final LiikuntatuntiService liikuntatuntiService;
+    private Liikkuja currentLiikkuja;
 
-    private ComboBox<Liikkuja> liikkujaCombo = new ComboBox<>("Valitse liikkuja");
     private Grid<Liikuntatunti> tuntiGrid = new Grid<>(Liikuntatunti.class, false);
+
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("d.M.yyyy 'klo' H:mm");
 
     public LiikkujaIlmoittautuminenView(
             LiikkujaService liikkujaService,
@@ -37,41 +42,63 @@ public class LiikkujaIlmoittautuminenView extends VerticalLayout implements Befo
         this.liikkujaService = liikkujaService;
         this.liikuntatuntiService = liikuntatuntiService;
 
-        liikkujaCombo.setItems(liikkujaService.findAll());
-        liikkujaCombo.setItemLabelGenerator(l -> l.getEtunimi() + " " + l.getSukunimi());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
 
-        tuntiGrid.addColumn(Liikuntatunti::getNimi).setHeader("Tunti");
-        tuntiGrid.addColumn(Liikuntatunti::getTyyppi).setHeader("Tyyppi");
+        currentLiikkuja = liikkujaService.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Liikkujaa ei löydy käyttäjälle"));
+
+        tuntiGrid.addColumn(Liikuntatunti::getNimi)
+                .setHeader("Nimi")
+                .setAutoWidth(true);
+
+        tuntiGrid.addColumn(Liikuntatunti::getTyyppi)
+                .setHeader("Tyyppi")
+                .setAutoWidth(true);
+
+        tuntiGrid.addColumn(tunti -> {
+            if (tunti.getAlkuaika() == null || tunti.getLoppuaika() == null) {
+                return "";
+            }
+            String alku = tunti.getAlkuaika().format(DATE_FORMAT);
+            String loppu = tunti.getLoppuaika().format(DateTimeFormatter.ofPattern("H:mm"));
+            return alku + "–" + loppu;
+        }).setHeader("Ajankohta").setAutoWidth(true);
+
+        tuntiGrid.addColumn(tunti -> tunti.getOhjaaja() != null
+                ? tunti.getOhjaaja().getNimi()
+                : "-").setHeader("Ohjaaja").setAutoWidth(true);
+
+        tuntiGrid.addColumn(tunti -> {
+            int ilmoittautuneet = tunti.getLiikkujat() != null
+                    ? tunti.getLiikkujat().size()
+                    : 0;
+            return ilmoittautuneet + " / " + tunti.getKapasiteetti();
+        }).setHeader("Ilmoittautuneet").setAutoWidth(true);
 
         tuntiGrid.addComponentColumn(tunti -> {
             Button ilmoittaudu = new Button("Ilmoittaudu");
             ilmoittaudu.addClickListener(e -> {
-                try {
-                    liikkujaService.ilmoittauduTunnille(
-                            liikkujaCombo.getValue(), tunti);
-                    Notification.show("Ilmoittautuminen onnistui");
-                } catch (Exception ex) {
-                    Notification.show(ex.getMessage(), 3000,
-                            Notification.Position.MIDDLE);
-                }
+                liikkujaService.ilmoittauduTunnille(currentLiikkuja, tunti);
+                Notification.show("Ilmoittautuminen onnistui");
+                tuntiGrid.getDataProvider().refreshItem(tunti);
             });
             return ilmoittaudu;
-        });
+        }).setHeader("Toiminnot");
 
-        liikkujaCombo.addValueChangeListener(e -> tuntiGrid.setItems(
-                liikuntatuntiService.findAllSortedByAlkuaika()));
+        tuntiGrid.setItems(liikuntatuntiService.findAllSortedByAlkuaika());
 
         add(
                 new H2("Liikkujan ilmoittautuminen"),
-                liikkujaCombo,
                 tuntiGrid);
     }
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getAuthorities().stream().noneMatch(authority ->
-                authority.getAuthority().equals("ROLE_USER") || authority.getAuthority().equals("ROLE_ADMIN"))) {
+        if (authentication == null || authentication.getAuthorities().stream()
+                .noneMatch(authority -> authority.getAuthority().equals("ROLE_USER")
+                        || authority.getAuthority().equals("ROLE_ADMIN"))) {
             event.rerouteTo(AccessDeniedView.class);
         }
     }
