@@ -23,7 +23,7 @@ import org.springframework.security.core.Authentication;
 
 @PageTitle("Liikuntatunnit")
 @Route(value = "liikuntatunnit", layout = MainLayout.class)
-@RolesAllowed({ "ADMIN", "SUPER" })
+@RolesAllowed({ "SUPER" })
 public class LiikuntatuntiListView extends VerticalLayout implements BeforeEnterObserver {
 
         private final LiikuntatuntiService liikuntatuntiService;

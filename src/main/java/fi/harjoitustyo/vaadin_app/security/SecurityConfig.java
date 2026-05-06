@@ -16,68 +16,68 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableMethodSecurity(jsr250Enabled = true)
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/login",
-                                "/logout",
-                                "/access-denied",
-                                "/register",
-                                "/register/**",
-                                "/",
-                                "/VAADIN/**")
-                        .permitAll()
-                        .requestMatchers(
-                                "/Ilmoittautuminen",
-                                "/Ilmoittautuminen/**",
-                                "/Tuntihaku",
-                                "/Tuntihaku/**")
-                        .hasAnyRole("USER", "SUPER", "ADMIN")
-                        .requestMatchers(
-                                "/Liikuntatunnit",
-                                "/Liikuntatunnit/**",
-                                "/LiikuntatuntiForm",
-                                "/LiikuntatuntiForm/**")
-                        .hasAnyRole("SUPER", "ADMIN")
-                        .requestMatchers(
-                                "/Ohjaajat",
-                                "/Ohjaajat/**",
-                                "/OhjaajaForm",
-                                "/OhjaajaForm/**",
-                                "/Liikkujat",
-                                "/Liikkujat/**",
-                                "/LiikkujaForm",
-                                "/LiikkujaForm/**",
-                                "/Jäsenyydet",
-                                "/Jäsenyydet/**",
-                                "/JasenyysForm",
-                                "/JasenyysForm/**",
-                                "/Quill",
-                                "/Quill/**",
-                                "/AdminPanel",
-                                "/AdminPanel/**")
-                        .hasRole("ADMIN")
-                        .anyRequest().authenticated())
-                .formLogin(form -> form
-                        .defaultSuccessUrl("/", true)
-                        .permitAll())
-                .logout(logout -> logout.permitAll())
-                .exceptionHandling(ex -> ex
-                        .accessDeniedPage("/access-denied"));
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                http
+                                .csrf(csrf -> csrf.disable())
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers(
+                                                                "/login",
+                                                                "/logout",
+                                                                "/access-denied",
+                                                                "/register",
+                                                                "/register/**",
+                                                                "/",
+                                                                "/VAADIN/**")
+                                                .permitAll()
+                                                .requestMatchers("/Ilmoittautuminen",
+                                                                "/Ilmoittautuminen/**")
+                                                .hasAnyRole("USER")
+                                                .requestMatchers(
 
-        return http.build();
-    }
+                                                                "/Tuntihaku",
+                                                                "/Tuntihaku/**",
+                                                                "/Liikkujat",
+                                                                "/Liikkujat/**",
+                                                                "/LiikkujaForm",
+                                                                "/LiikkujaForm/**",
+                                                                "/Jäsenyydet",
+                                                                "/Jäsenyydet/**",
+                                                                "/JasenyysForm",
+                                                                "/JasenyysForm/**")
+                                                .hasAnyRole("USER", "SUPER", "ADMIN")
+                                                .requestMatchers(
+                                                                "/Liikuntatunnit",
+                                                                "/Liikuntatunnit/**",
+                                                                "/LiikuntatuntiForm",
+                                                                "/LiikuntatuntiForm/**")
+                                                .hasAnyRole("SUPER")
+                                                .requestMatchers(
+                                                                "/Ohjaajat",
+                                                                "/Ohjaajat/**",
+                                                                "/OhjaajaForm",
+                                                                "/OhjaajaForm/**",
+                                                                "/Quill",
+                                                                "/Quill/**")
+                                                .hasRole("ADMIN")
+                                                .anyRequest().authenticated())
+                                .formLogin(form -> form
+                                                .defaultSuccessUrl("/", true)
+                                                .permitAll())
+                                .logout(logout -> logout.permitAll())
+                                .exceptionHandling(ex -> ex
+                                                .accessDeniedPage("/access-denied"));
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+                return http.build();
+        }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
+
+        @Bean
+        public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+                return config.getAuthenticationManager();
+        }
 }

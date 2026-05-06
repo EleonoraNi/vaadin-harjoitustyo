@@ -9,7 +9,6 @@ import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -170,16 +169,16 @@ public class MainLayout extends AppLayout {
                         drawerLayout.add(tuntihaku);
                 }
 
-                // ILMOITTAUTUMINEN - USER, SUPER, ADMIN
-                if (hasRole("USER") || hasRole("ADMIN")) {
+                // ILMOITTAUTUMINEN - USER
+                if (hasRole("USER")) {
                         RouterLink ilmo = new RouterLink("Ilmoittautuminen", LiikkujaIlmoittautuminenView.class);
                         ilmo.addComponentAsFirst(new Icon(VaadinIcon.CLIPBOARD_CHECK));
                         ilmo.addClassName("nav-link");
                         drawerLayout.add(ilmo);
                 }
 
-                // LIIKUNTATUNNIT - SUPER, ADMIN
-                if (hasRole("SUPER") || hasRole("ADMIN")) {
+                // LIIKUNTATUNNIT - SUPER
+                if (hasRole("SUPER")) {
                         RouterLink tunnit = new RouterLink("Liikuntatunnit", LiikuntatuntiListView.class);
                         tunnit.addComponentAsFirst(new Icon(VaadinIcon.CALENDAR));
                         tunnit.addClassName("nav-link");
@@ -188,25 +187,30 @@ public class MainLayout extends AppLayout {
 
                 // ADMIN näkymät
                 if (hasRole("ADMIN")) {
-                        RouterLink liikkujat = new RouterLink("Liikkujat", LiikkujaListView.class);
-                        liikkujat.addComponentAsFirst(new Icon(VaadinIcon.USERS));
-                        liikkujat.addClassName("nav-link");
-                        drawerLayout.add(liikkujat);
 
                         RouterLink ohjaajat = new RouterLink("Ohjaajat", OhjaajaListView.class);
                         ohjaajat.addComponentAsFirst(new Icon(VaadinIcon.USER));
                         ohjaajat.addClassName("nav-link");
                         drawerLayout.add(ohjaajat);
 
+                        RouterLink quill = new RouterLink("Quill Editor", QuillEditorView.class);
+                        quill.addComponentAsFirst(new Icon(VaadinIcon.EDIT));
+                        quill.addClassName("nav-link");
+                        drawerLayout.add(quill);
+                }
+                
+                //Yhteiset näkymät
+                if (hasRole("ADMIN") || hasRole("SUPER") || hasRole("USER")) {
+                        RouterLink liikkujat = new RouterLink("Liikkujat", LiikkujaListView.class);
+                        liikkujat.addComponentAsFirst(new Icon(VaadinIcon.USERS));
+                        liikkujat.addClassName("nav-link");
+                        drawerLayout.add(liikkujat);
+
                         RouterLink jasenyydet = new RouterLink("Jäsenyydet", JasenyysListView.class);
                         jasenyydet.addComponentAsFirst(new Icon(VaadinIcon.USER_CHECK));
                         jasenyydet.addClassName("nav-link");
                         drawerLayout.add(jasenyydet);
 
-                        RouterLink quill = new RouterLink("Quill Editor", QuillEditorView.class);
-                        quill.addComponentAsFirst(new Icon(VaadinIcon.EDIT));
-                        quill.addClassName("nav-link");
-                        drawerLayout.add(quill);
                 }
 
                 addToDrawer(drawerLayout);

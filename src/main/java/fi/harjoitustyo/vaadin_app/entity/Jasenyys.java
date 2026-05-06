@@ -75,9 +75,7 @@ public class Jasenyys {
             return false;
         }
         LocalDate today = LocalDate.now();
-        return today.isEqual(alkamisPaiva)
-                || (today.isAfter(alkamisPaiva) && today.isBefore(paattymisPaiva))
-                || today.isEqual(paattymisPaiva);
+        return today.isEqual(alkamisPaiva) || (today.isAfter(alkamisPaiva) && today.isBefore(paattymisPaiva)) || today.isEqual(paattymisPaiva);
 
     }
 

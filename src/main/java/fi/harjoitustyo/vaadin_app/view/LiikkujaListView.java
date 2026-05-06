@@ -2,7 +2,6 @@ package fi.harjoitustyo.vaadin_app.view;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
@@ -12,24 +11,21 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-
 import org.springframework.security.core.context.SecurityContextHolder;
-
 import com.vaadin.flow.component.UI;
-
 import fi.harjoitustyo.vaadin_app.entity.Liikkuja;
 import fi.harjoitustyo.vaadin_app.service.LiikkujaService;
 import jakarta.annotation.security.RolesAllowed;
+
 import org.springframework.security.core.Authentication;
 
 @PageTitle("Liikkujat")
 @Route(value = "liikkujat", layout = MainLayout.class)
-@RolesAllowed({"ADMIN"})
+@RolesAllowed({ "ADMIN", "SUPER", "USER" })
 public class LiikkujaListView extends VerticalLayout implements BeforeEnterObserver {
 
     private final LiikkujaService liikkujaService;
     private final Grid<Liikkuja> grid = new Grid<>(Liikkuja.class, false);
-    
 
     public LiikkujaListView(LiikkujaService liikkujaService) {
         this.liikkujaService = liikkujaService;
@@ -43,6 +39,16 @@ public class LiikkujaListView extends VerticalLayout implements BeforeEnterObser
         configureGrid();
 
         Button uusi = new Button("Uusi liikkuja");
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean isAdminOrSuper = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN") || a.getAuthority().equals("ROLE_SUPER"));
+
+        if (!isAdminOrSuper) {
+            uusi.setVisible(false);
+        }
+
         uusi.addClassName("primary-action");
         uusi.addClickListener(e -> UI.getCurrent().navigate("liikkuja"));
 
@@ -59,7 +65,6 @@ public class LiikkujaListView extends VerticalLayout implements BeforeEnterObser
         grid.asSingleSelect().addValueChangeListener(e -> muokkaa.setEnabled(e.getValue() != null));
         grid.addItemDoubleClickListener(e -> UI.getCurrent().navigate("liikkuja/" + e.getItem().getId()));
 
-        
         HorizontalLayout toolbar = new HorizontalLayout(uusi, muokkaa);
         toolbar.getStyle().set("align-items", "center");
 
@@ -67,7 +72,6 @@ public class LiikkujaListView extends VerticalLayout implements BeforeEnterObser
         grid.getStyle().set("border-radius", "10px");
 
         add(toolbar, grid);
-
 
         refresh();
     }
@@ -100,14 +104,32 @@ public class LiikkujaListView extends VerticalLayout implements BeforeEnterObser
     }
 
     private void refresh() {
-        grid.setItems(liikkujaService.findAll());
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean isAdminOrSuper = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN") || a.getAuthority().equals("ROLE_SUPER"));
+
+        if (isAdminOrSuper) {
+            grid.setItems(liikkujaService.findAll());
+        } else {
+            String username = auth.getName();
+
+            grid.setItems(
+                    liikkujaService.findByUsername(username)
+                            .stream()
+                            .toList());
+        }
+
     }
-    
+
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getAuthorities().stream().noneMatch(authority ->
-                 authority.getAuthority().equals("ROLE_ADMIN"))) {
+        if (authentication == null || authentication.getAuthorities().stream()
+                .noneMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN")
+                        || authority.getAuthority().equals("ROLE_SUPER")
+                        || authority.getAuthority().equals("ROLE_USER"))) {
             event.rerouteTo(AccessDeniedView.class);
         }
     }

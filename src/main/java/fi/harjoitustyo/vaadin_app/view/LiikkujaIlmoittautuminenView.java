@@ -24,7 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 @Route(value = "Ilmoittautuminen", layout = MainLayout.class)
 @PageTitle("Ilmoittautuminen liikuntatunnille")
-@RolesAllowed({ "ROLE_USER", "ROLE_SUPER", "ROLE_ADMIN" })
+@RolesAllowed({ "ROLE_USER"})
 public class LiikkujaIlmoittautuminenView extends VerticalLayout implements BeforeEnterObserver {
 
     private final LiikkujaService liikkujaService;

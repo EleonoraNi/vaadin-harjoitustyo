@@ -31,7 +31,7 @@ import org.springframework.security.core.Authentication;
 
 @PageTitle("Liikuntatunti")
 @Route(value = "liikuntatunti", layout = MainLayout.class)
-@RolesAllowed({"SUPER", "ADMIN"})
+@RolesAllowed({"SUPER"})
 public class LiikuntatuntiFormView extends VerticalLayout
         implements HasUrlParameter<Long>, BeforeEnterObserver {
 

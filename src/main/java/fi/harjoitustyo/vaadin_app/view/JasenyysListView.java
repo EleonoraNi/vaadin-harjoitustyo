@@ -17,7 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 @PageTitle("Jäsenyydet")
 @Route(value = "jasenyydet", layout = MainLayout.class)
-@RolesAllowed({"ADMIN"})
+@RolesAllowed({ "ADMIN", "SUPER", "USER" })
 public class JasenyysListView extends VerticalLayout implements BeforeEnterObserver {
 
     private final JasenyysService jasenyysService;
@@ -37,10 +37,6 @@ public class JasenyysListView extends VerticalLayout implements BeforeEnterObser
     }
 
     private void configureGrid() {
-        grid.addColumn(Jasenyys::getId)
-            .setHeader("ID")
-            .setSortable(true);
-
         grid.addColumn(j -> j.getLiikkuja().getEtunimi() + " " + j.getLiikkuja().getSukunimi())
             .setHeader("Liikkuja")
             .setSortable(true);
@@ -69,14 +65,30 @@ public class JasenyysListView extends VerticalLayout implements BeforeEnterObser
     }
 
     private void updateList() {
-        grid.setItems(jasenyysService.findAll());
+                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean isAdminOrSuper = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN") || a.getAuthority().equals("ROLE_SUPER"));
+
+        if (isAdminOrSuper) {
+            grid.setItems(jasenyysService.findAll());
+        } else {
+            String username = auth.getName();
+
+            grid.setItems(
+                    jasenyysService.findForCurrentUser(username)
+                            .stream()
+                            .toList());
+        }
     }
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getAuthorities().stream().noneMatch(authority ->
-                authority.getAuthority().equals("ROLE_ADMIN"))) {
+                authority.getAuthority().equals("ROLE_ADMIN") ||
+                authority.getAuthority().equals("ROLE_SUPER") ||
+                authority.getAuthority().equals("ROLE_USER"))) {
             event.rerouteTo(AccessDeniedView.class);
         }
     }

@@ -27,7 +27,7 @@ import org.springframework.security.core.Authentication;
 
 @PageTitle("Liikkuja")
 @Route(value = "liikkuja", layout = MainLayout.class)
-@RolesAllowed({"ADMIN"})
+@RolesAllowed({ "ADMIN", "SUPER", "USER" })
 public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<Long>, BeforeEnterObserver {
 
     private final LiikkujaService liikkujaService;
@@ -64,6 +64,14 @@ public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<
 
         configureForm();
         add(buildFormLayout(), buildButtons());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean isAdminOrSuper = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN") || a.getAuthority().equals("ROLE_SUPER"));
+
+        if (!isAdminOrSuper) {
+            poista.setVisible(false);
+        }
     }
 
     @Override
@@ -80,6 +88,20 @@ public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<
         }
 
         binder.readBean(current);
+
+        // ✅ TÄMÄ TÄNNE (oikea paikka!)
+        if (current.getJasenyys() != null) {
+            Jasenyys j = current.getJasenyys();
+
+            jasenyysAlku.setValue(j.getAlkamisPaiva());
+            jasenyysLoppu.setValue(j.getPaattymisPaiva());
+            jasenyysTaso.setValue(String.valueOf(j.getTaso()));
+        } else {
+            jasenyysAlku.clear();
+            jasenyysLoppu.clear();
+            jasenyysTaso.clear();
+        }
+
         poista.setEnabled(current.getId() != null);
     }
 
@@ -119,27 +141,37 @@ public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<
 
     private void save() {
         try {
-            // 🔹 Luodaan jäsenyys vain jos käyttäjä on syöttänyt tason
-            if (current.getJasenyys() == null &&
-                    jasenyysTaso.getValue() != null &&
-                    !jasenyysTaso.getValue().isBlank()) {
+            binder.writeBean(current); // tämä täyttää vain Liikkuja
 
-                Jasenyys j = new Jasenyys();
-                j.setLiikkuja(current);
+            // ✅ TÄRKEÄ: käsittele jäsenyys erikseen
+            if (jasenyysTaso.getValue() != null && !jasenyysTaso.getValue().isBlank()) {
+
+                if (jasenyysAlku.getValue() == null || jasenyysLoppu.getValue() == null) {
+                    Notification.show("Täytä jäsenyyden päivämäärät");
+                    return;
+                }
+
+                Jasenyys j = current.getJasenyys();
+
+                if (j == null) {
+                    j = new Jasenyys();
+                    j.setLiikkuja(current);
+                }
+
+                j.setAlkamisPaiva(jasenyysAlku.getValue());
+                j.setPaattymisPaiva(jasenyysLoppu.getValue());
+                j.setTaso(Integer.parseInt(jasenyysTaso.getValue()));
+
                 current.setJasenyys(j);
             }
 
-            binder.writeBean(current); // validoinnit tapahtuvat tässä
             liikkujaService.save(current);
 
             Notification.show("Tallennettu");
             UI.getCurrent().navigate(LiikkujaListView.class);
 
         } catch (ValidationException ex) {
-            Notification.show("Tarkista kentät – validointi esti tallennuksen.");
-        } catch (Exception ex) {
-            Notification.show("Tallennus epäonnistui: " + ex.getMessage(),
-                    5000, Notification.Position.MIDDLE);
+            Notification.show("Tarkista kentät");
         }
     }
 
@@ -157,13 +189,16 @@ public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<
             Notification.show("Poisto epäonnistui: " + ex.getMessage(), 5000, Notification.Position.MIDDLE);
         }
     }
+
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getAuthorities().stream().noneMatch(authority ->
-                 authority.getAuthority().equals("ROLE_ADMIN"))) {
+        if (authentication == null || authentication.getAuthorities().stream()
+                .noneMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN")
+                        || authority.getAuthority().equals("ROLE_SUPER")
+                        || authority.getAuthority().equals("ROLE_USER"))) {
             event.rerouteTo(AccessDeniedView.class);
         }
     }
-    
+
 }
