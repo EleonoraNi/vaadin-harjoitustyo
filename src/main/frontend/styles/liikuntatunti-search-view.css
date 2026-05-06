@@ -10,7 +10,7 @@
 .search-container vaadin-date-picker,
 .search-container vaadin-combo-box {
     width: 100%;
-    color: pink;
+    color: rgb(43, 196, 41);
 }
 
 .search-grid {
