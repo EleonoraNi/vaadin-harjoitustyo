@@ -3,6 +3,7 @@ package fi.harjoitustyo.vaadin_app.view;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.notification.Notification;
@@ -14,12 +15,16 @@ import com.vaadin.flow.router.Route;
 import fi.harjoitustyo.vaadin_app.entity.Ohjaaja;
 import fi.harjoitustyo.vaadin_app.service.OhjaajaService;
 import jakarta.annotation.security.RolesAllowed;
+import jakarta.persistence.metamodel.StaticMetamodel;
+
 import org.springframework.security.core.Authentication;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.theme.lumo.LumoUtility.Background;
 import com.vaadin.flow.theme.lumo.LumoUtility.BorderRadius;
 import com.vaadin.flow.theme.lumo.LumoUtility.BoxShadow;
+import com.vaadin.flow.theme.lumo.LumoUtility.FontSize;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
 import com.vaadin.flow.theme.lumo.LumoUtility.TextColor;
@@ -34,9 +39,10 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 
+@StyleSheet(Lumo.UTILITY_STYLESHEET) // Varmistetaan, että Lumo-tyylit ovat käytössä
 @PageTitle("Ohjaajat")
 @Route(value = "ohjaajat", layout = MainLayout.class)
-@RolesAllowed({"ADMIN"})
+@RolesAllowed({ "ADMIN" })
 public class OhjaajaListView extends VerticalLayout implements BeforeEnterObserver {
 
     private final OhjaajaService ohjaajaService;
@@ -71,8 +77,10 @@ public class OhjaajaListView extends VerticalLayout implements BeforeEnterObserv
 
         H2 otsikko = new H2("Ohjaajat");
         otsikko.addClassNames(
-                TextColor.PRIMARY,
-                Margin.Bottom.MEDIUM);
+                TextColor.SUCCESS,
+                FontSize.XXXLARGE,
+                Margin.Bottom.MEDIUM,
+                Padding.Bottom.MEDIUM);
         add(otsikko);
 
         configureGrid();
@@ -137,7 +145,12 @@ public class OhjaajaListView extends VerticalLayout implements BeforeEnterObserv
 
         HorizontalLayout toolbar = new HorizontalLayout(uusi, muokkaa, tuoCsv, vieCsv);
 
-        toolbar.addClassNames(Margin.Bottom.MEDIUM, Padding.SMALL, BorderRadius.MEDIUM, BoxShadow.SMALL);
+        toolbar.addClassNames(
+                Margin.MEDIUM,
+                Padding.MEDIUM,
+                BoxShadow.SMALL,
+                BorderRadius.MEDIUM,
+                Background.SHADE_10);
 
         add(toolbar, grid);
         refresh();

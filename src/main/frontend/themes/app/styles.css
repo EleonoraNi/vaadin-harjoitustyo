@@ -41,7 +41,7 @@ a.nav-link[highlight] {
   --lumo-primary-color-10pct: rgba(127, 38, 236, 0.1);
 
   --lumo-body-text-color: #1f2933;
-  --lumo-base-color: #f9fafb;
+  --lumo-base-color: #f8f9fa;
 
 }
 
@@ -49,18 +49,10 @@ vaadin-app-layout::part(content) {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  padding: 0;
+  padding-bottom: 70px;
 }
 
-/* Työntää footerin alas */
 .app-footer {
-  width: 100%;
-  margin-top: auto;
-  box-sizing: border-box;
-  background-color: red;
-  padding: var(--lumo-space-m);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
+    background-color: var(--lumo-base-color);
+    border-top: 1px solid var(--lumo-contrast-10pct);
 }

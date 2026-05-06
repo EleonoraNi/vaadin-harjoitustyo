@@ -10,10 +10,11 @@
 .search-container vaadin-date-picker,
 .search-container vaadin-combo-box {
     width: 100%;
+    color: pink;
 }
 
 .search-grid {
-    box-shadow: var(--lumo-box-shadow-s);
+    box-shadow: var(--lumo-box-shadow-m);
     transition: box-shadow 0.3s ease, transform 0.3s ease, outline 0.3s ease;
 }
 

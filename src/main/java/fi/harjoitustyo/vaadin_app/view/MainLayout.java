@@ -5,26 +5,27 @@ import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.router.RouterLayout;
 import com.vaadin.flow.router.RouterLink;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Collection;
+import com.vaadin.flow.theme.lumo.Lumo;
 
-@CssImport("./themes/app/styles.css")
-public class MainLayout extends AppLayout implements RouterLayout {
-
-        private VerticalLayout content;
+@StyleSheet(Lumo.STYLESHEET)
+@StyleSheet("styles.css")
+public class MainLayout extends AppLayout {
 
         private VerticalLayout mainContent;
         private Footer footer;
@@ -41,8 +42,7 @@ public class MainLayout extends AppLayout implements RouterLayout {
                 footer = createFooter();
 
                 VerticalLayout wrapper = new VerticalLayout();
-                wrapper.setSizeFull(); // ✅ koko viewport
-                wrapper.setWidthFull(); // ✅ koko leveys
+                wrapper.setSizeFull();
                 wrapper.setPadding(false);
                 wrapper.setSpacing(false);
 
@@ -50,6 +50,7 @@ public class MainLayout extends AppLayout implements RouterLayout {
                 wrapper.expand(mainContent); // ✅ työntää footerin alas
 
                 setContent(wrapper);
+
         }
 
         private void createHeader() {
@@ -215,14 +216,21 @@ public class MainLayout extends AppLayout implements RouterLayout {
                 Footer footer = new Footer();
                 footer.setWidthFull();
 
-                footer.add(
+                HorizontalLayout layout = new HorizontalLayout(
                                 new Span("© 2026 Eleonora Niskanen"),
-                                new Span("Vaadin + Spring Boot -harjoitustyö"),
+                                new Span("Java web-ohjelmointi kurssin harjoitustyö"),
                                 new Anchor("https://www.savonia.fi", "Savonia AMK"));
 
-                footer.addClassName("app-footer");
-                return footer;
+                layout.setWidthFull();
+                layout.setSpacing(true);
+                layout.setPadding(true);
+                layout.setJustifyContentMode(
+                                JustifyContentMode.BETWEEN);
 
+                footer.add(layout);
+                footer.addClassName("app-footer");
+
+                return footer;
         }
 
         @Override

@@ -2,6 +2,7 @@ package fi.harjoitustyo.vaadin_app.view;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
@@ -20,7 +21,6 @@ import fi.harjoitustyo.vaadin_app.entity.Liikkuja;
 import fi.harjoitustyo.vaadin_app.service.LiikkujaService;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.security.core.Authentication;
-
 
 @PageTitle("Liikkujat")
 @Route(value = "liikkujat", layout = MainLayout.class)
@@ -44,7 +44,6 @@ public class LiikkujaListView extends VerticalLayout implements BeforeEnterObser
 
         Button uusi = new Button("Uusi liikkuja");
         uusi.addClassName("primary-action");
-        uusi.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         uusi.addClickListener(e -> UI.getCurrent().navigate("liikkuja"));
 
         Button muokkaa = new Button("Muokkaa valittua");
