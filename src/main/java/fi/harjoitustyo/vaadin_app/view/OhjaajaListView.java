@@ -15,8 +15,6 @@ import com.vaadin.flow.router.Route;
 import fi.harjoitustyo.vaadin_app.entity.Ohjaaja;
 import fi.harjoitustyo.vaadin_app.service.OhjaajaService;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.persistence.metamodel.StaticMetamodel;
-
 import org.springframework.security.core.Authentication;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.server.StreamResource;

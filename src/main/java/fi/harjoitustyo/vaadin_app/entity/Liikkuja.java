@@ -2,7 +2,6 @@ package fi.harjoitustyo.vaadin_app.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import fi.harjoitustyo.vaadin_app.entity.User;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
