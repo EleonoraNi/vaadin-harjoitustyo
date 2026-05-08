@@ -118,8 +118,7 @@ public class LiikuntatuntiListView extends VerticalLayout implements BeforeEnter
         public void beforeEnter(BeforeEnterEvent event) {
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
                 if (authentication == null || authentication.getAuthorities().stream()
-                                .noneMatch(authority -> authority.getAuthority().equals("ROLE_SUPER")
-                                                || authority.getAuthority().equals("ROLE_ADMIN"))) {
+                                .noneMatch(authority -> authority.getAuthority().equals("ROLE_SUPER"))) {
                         event.rerouteTo(AccessDeniedView.class);
                 }
         }

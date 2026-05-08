@@ -30,35 +30,33 @@ public class SecurityConfig {
                                                                 "/",
                                                                 "/VAADIN/**")
                                                 .permitAll()
-                                                .requestMatchers("/Ilmoittautuminen",
-                                                                "/Ilmoittautuminen/**")
+                                                .requestMatchers("/ilmoittautuminen",
+                                                                "/ilmoittautuminen/**")
                                                 .hasAnyRole("USER")
                                                 .requestMatchers(
 
-                                                                "/Tuntihaku",
-                                                                "/Tuntihaku/**",
-                                                                "/Liikkujat",
-                                                                "/Liikkujat/**",
-                                                                "/LiikkujaForm",
-                                                                "/LiikkujaForm/**",
-                                                                "/Jäsenyydet",
-                                                                "/Jäsenyydet/**",
-                                                                "/JasenyysForm",
-                                                                "/JasenyysForm/**")
+                                                                "/tuntihaku",
+                                                                "/tuntihaku/**",
+                                                                "/liikkujat",
+                                                                "/liikkujat/**",
+                                                                "/liikkujaForm",
+                                                                "/liikkujaForm/**",
+                                                                "/jasenyydet",
+                                                                "/jasenyydet/**")
                                                 .hasAnyRole("USER", "SUPER", "ADMIN")
                                                 .requestMatchers(
-                                                                "/Liikuntatunnit",
-                                                                "/Liikuntatunnit/**",
-                                                                "/LiikuntatuntiForm",
-                                                                "/LiikuntatuntiForm/**")
+                                                                "/liikuntatunnit",
+                                                                "/liikuntatunnit/**",
+                                                                "/liikuntatuntiForm",
+                                                                "/liikuntatuntiForm/**")
                                                 .hasAnyRole("SUPER")
                                                 .requestMatchers(
-                                                                "/Ohjaajat",
-                                                                "/Ohjaajat/**",
-                                                                "/OhjaajaForm",
-                                                                "/OhjaajaForm/**",
-                                                                "/Quill",
-                                                                "/Quill/**")
+                                                                "/ohjaajat",
+                                                                "/ohjaajat/**",
+                                                                "/ohjaajaForm",
+                                                                "/ohjaajaForm/**",
+                                                                "/quill",
+                                                                "/quill/**")
                                                 .hasRole("ADMIN")
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form

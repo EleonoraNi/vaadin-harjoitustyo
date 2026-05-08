@@ -8,6 +8,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -61,7 +62,9 @@ public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<
         setSpacing(true);
 
         add(new H2("Liikkujan tiedot"));
-
+        Paragraph info = new Paragraph("Tällä lomakkeella voit lisätä tietoja, muokata tai poistaa niitä. Jäsenyystiedot ovat vapaaehtoisia, mutta jos täytät jäsenyystason, sinun tulee täyttää myös alkamispäivä ja päättymispäivä.");
+        add(info);
+        
         configureForm();
         add(buildFormLayout(), buildButtons());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -72,6 +75,7 @@ public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<
         if (!isAdminOrSuper) {
             poista.setVisible(false);
         }
+        
     }
 
     @Override

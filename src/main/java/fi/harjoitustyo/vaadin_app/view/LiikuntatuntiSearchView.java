@@ -140,12 +140,13 @@ public class LiikuntatuntiSearchView extends VerticalLayout
         private HorizontalLayout buildSearchForm() {
                 ResourceBundle msg = messages();
 
-                TextField teksti = new TextField(msg.getString("field.text"));
-                teksti.setPlaceholder(
-                                msg.getString("placeholder.text"));
+                TextField tuntiTeksti = new TextField(msg.getString("field.textClass"));
+                tuntiTeksti.setPlaceholder(
+                                msg.getString("placeholder.textClass"));
 
-                TextField ohjaajaTeksti = new TextField("Ohjaaja tai erikoistuminen");
-                ohjaajaTeksti.setPlaceholder("Esim. Maija tai jooga");
+                TextField ohjaajaTeksti = new TextField(msg.getString("field.textInstructor"));
+                ohjaajaTeksti.setPlaceholder(
+                                msg.getString("placeholder.textInstructor"));
 
                 DatePicker alkuPaiva = new DatePicker(msg.getString("field.startDate"));
 
@@ -175,10 +176,10 @@ public class LiikuntatuntiSearchView extends VerticalLayout
                                 }
 
                                 var tulokset = liikuntatuntiService.search(
-                                                teksti.getValue(),
+                                                tuntiTeksti.getValue(),
                                                 alku,
                                                 loppu,
-                                                ohjaajaTekstiValue);
+                                                ohjaajaTeksti.getValue());
 
                                 ui.access(() -> {
                                         grid.setItems(tulokset);
@@ -189,7 +190,7 @@ public class LiikuntatuntiSearchView extends VerticalLayout
                 });
 
                 HorizontalLayout layout = new HorizontalLayout(
-                                teksti, ohjaajaTeksti, alkuPaiva, loppuPaiva, hae);
+                                tuntiTeksti, ohjaajaTeksti, alkuPaiva, loppuPaiva, hae);
                 layout.setAlignItems(Alignment.END);
                 layout.setWidthFull();
                 layout.addClassName("search-container");

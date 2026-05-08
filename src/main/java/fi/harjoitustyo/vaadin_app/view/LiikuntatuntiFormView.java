@@ -224,7 +224,7 @@ public class LiikuntatuntiFormView extends VerticalLayout
     public void beforeEnter(BeforeEnterEvent event) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getAuthorities().stream().noneMatch(authority ->
-                authority.getAuthority().equals("ROLE_SUPER") || authority.getAuthority().equals("ROLE_ADMIN"))) {
+                authority.getAuthority().equals("ROLE_SUPER"))) {
             event.rerouteTo(AccessDeniedView.class);
         }
     }
