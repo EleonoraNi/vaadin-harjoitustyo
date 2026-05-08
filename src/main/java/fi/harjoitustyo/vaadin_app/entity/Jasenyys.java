@@ -26,6 +26,15 @@ public class Jasenyys {
     @Max(3)
     private Integer taso;
 
+    @NotBlank
+    @Size(min = 2, max = 30)
+    private String tyyppi;
+
+    @NotBlank
+    @Size(min = 2, max = 50)
+    private String kaupunki;
+
+
     @NotNull
     private boolean voimassa;
 
@@ -67,6 +76,21 @@ public class Jasenyys {
     public void setTaso(int taso) {
         this.taso = taso;
     }
+        public String getTyyppi() {
+        return tyyppi;
+    }
+
+    public void setTyyppi(String tyyppi) {
+        this.tyyppi = tyyppi;
+    }
+    
+    public String getKaupunki() {
+        return kaupunki;
+    }
+
+    public void setKaupunki(String kaupunki) {
+        this.kaupunki = kaupunki;
+    }
 
     @Transient
     public boolean isVoimassa() {
@@ -75,7 +99,8 @@ public class Jasenyys {
             return false;
         }
         LocalDate today = LocalDate.now();
-        return today.isEqual(alkamisPaiva) || (today.isAfter(alkamisPaiva) && today.isBefore(paattymisPaiva)) || today.isEqual(paattymisPaiva);
+        return today.isEqual(alkamisPaiva) || (today.isAfter(alkamisPaiva) && today.isBefore(paattymisPaiva))
+                || today.isEqual(paattymisPaiva);
 
     }
 

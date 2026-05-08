@@ -49,6 +49,8 @@ public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<
     private final DatePicker jasenyysAlku = new DatePicker("Jäsenyyden alkamispäivä");
     private final DatePicker jasenyysLoppu = new DatePicker("Jäsenyyden päättymispäivä");
     private final TextField jasenyysTaso = new TextField("Jäsenyystaso (1–3)");
+    private final TextField jasenyysTyyppi = new TextField("Jäsenyyden tyyppi");
+    private final TextField jasenyysKaupunki = new TextField("Kaupunki");
 
     private final Button tallenna = new Button("Tallenna");
     private final Button poista = new Button("Poista");
@@ -62,9 +64,10 @@ public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<
         setSpacing(true);
 
         add(new H2("Liikkujan tiedot"));
-        Paragraph info = new Paragraph("Tällä lomakkeella voit lisätä tietoja, muokata tai poistaa niitä. Jäsenyystiedot ovat vapaaehtoisia, mutta jos täytät jäsenyystason, sinun tulee täyttää myös alkamispäivä ja päättymispäivä.");
+        Paragraph info = new Paragraph(
+                "Tällä lomakkeella voit lisätä tietoja, muokata tai poistaa niitä. Jäsenyystiedot ovat vapaaehtoisia, mutta jos täytät jäsenyystason, sinun tulee täyttää myös alkamispäivä ja päättymispäivä.");
         add(info);
-        
+
         configureForm();
         add(buildFormLayout(), buildButtons());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -75,7 +78,7 @@ public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<
         if (!isAdminOrSuper) {
             poista.setVisible(false);
         }
-        
+
     }
 
     @Override
@@ -100,6 +103,8 @@ public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<
             jasenyysAlku.setValue(j.getAlkamisPaiva());
             jasenyysLoppu.setValue(j.getPaattymisPaiva());
             jasenyysTaso.setValue(String.valueOf(j.getTaso()));
+            jasenyysTyyppi.setValue(j.getTyyppi());
+            jasenyysKaupunki.setValue(j.getKaupunki());
         } else {
             jasenyysAlku.clear();
             jasenyysLoppu.clear();
@@ -132,7 +137,7 @@ public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<
                 new FormLayout.ResponsiveStep("600px", 2));
 
         form.add(etunimi, sukunimi, email, syntymaAika,
-                puhelin, jasenyysAlku, jasenyysLoppu, jasenyysTaso);
+                puhelin, jasenyysAlku, jasenyysLoppu, jasenyysTaso, jasenyysTyyppi, jasenyysKaupunki);
         form.setMaxWidth("900px");
         return form;
     }
@@ -165,6 +170,8 @@ public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<
                 j.setAlkamisPaiva(jasenyysAlku.getValue());
                 j.setPaattymisPaiva(jasenyysLoppu.getValue());
                 j.setTaso(Integer.parseInt(jasenyysTaso.getValue()));
+                j.setTyyppi(jasenyysTyyppi.getValue());
+                j.setKaupunki(jasenyysKaupunki.getValue());
 
                 current.setJasenyys(j);
             }

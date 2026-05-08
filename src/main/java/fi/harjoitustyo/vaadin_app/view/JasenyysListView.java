@@ -38,20 +38,20 @@ public class JasenyysListView extends VerticalLayout implements BeforeEnterObser
 
     private void configureGrid() {
         grid.addColumn(j -> j.getLiikkuja().getEtunimi() + " " + j.getLiikkuja().getSukunimi())
-            .setHeader("Liikkuja")
-            .setSortable(true);
+                .setHeader("Liikkuja")
+                .setSortable(true);
 
         grid.addColumn(Jasenyys::getAlkamisPaiva)
-            .setHeader("Alkamis päivä")
-            .setSortable(true);
+                .setHeader("Alkamis päivä")
+                .setSortable(true);
 
         grid.addColumn(Jasenyys::getPaattymisPaiva)
-            .setHeader("Päättymis päivä")
-            .setSortable(true);
+                .setHeader("Päättymis päivä")
+                .setSortable(true);
 
         grid.addColumn(Jasenyys::getTaso)
-            .setHeader("Taso")
-            .setSortable(true);
+                .setHeader("Taso")
+                .setSortable(true);
 
         grid.addComponentColumn(jasenyys -> {
             if (jasenyys.isVoimassa()) {
@@ -61,11 +61,19 @@ public class JasenyysListView extends VerticalLayout implements BeforeEnterObser
             }
         }).setHeader("Voimassaolo").setSortable(true);
 
+        grid.addColumn(Jasenyys::getTyyppi)
+                .setHeader("Tyyppi")
+                .setSortable(true);
+
+        grid.addColumn(Jasenyys::getKaupunki)
+                .setHeader("Kaupunki")
+                .setSortable(true);
+
         add(grid);
     }
 
     private void updateList() {
-                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         boolean isAdminOrSuper = auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN") || a.getAuthority().equals("ROLE_SUPER"));
@@ -85,10 +93,10 @@ public class JasenyysListView extends VerticalLayout implements BeforeEnterObser
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getAuthorities().stream().noneMatch(authority ->
-                authority.getAuthority().equals("ROLE_ADMIN") ||
-                authority.getAuthority().equals("ROLE_SUPER") ||
-                authority.getAuthority().equals("ROLE_USER"))) {
+        if (authentication == null || authentication.getAuthorities().stream()
+                .noneMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN") ||
+                        authority.getAuthority().equals("ROLE_SUPER") ||
+                        authority.getAuthority().equals("ROLE_USER"))) {
             event.rerouteTo(AccessDeniedView.class);
         }
     }
