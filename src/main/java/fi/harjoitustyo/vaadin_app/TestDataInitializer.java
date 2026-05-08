@@ -26,7 +26,8 @@ public class TestDataInitializer {
                         PasswordEncoder passwordEncoder,
                         OhjaajaService ohjaajaService,
                         LiikkujaService liikkujaService,
-                        LiikuntatuntiService liikuntatuntiService) {
+                        LiikuntatuntiService liikuntatuntiService,
+                        LiikuntatuntiService tuntiService) {
                 return args -> {
 
                         // Älä luo uudelleen jos dataa jo on
@@ -93,19 +94,22 @@ public class TestDataInitializer {
                          * =========================
                          */
                         Ohjaaja o1 = new Ohjaaja();
-                        o1.setNimi("Laura Laine");
+                        o1.setEtunimi("Laura");
+                        o1.setSukunimi("Laine");
                         o1.setEmail("laura.laine@testi.fi");
                         o1.setErikoistuminen("Jooga");
                         o1.setPuhelin("0401111111");
 
                         Ohjaaja o2 = new Ohjaaja();
-                        o2.setNimi("Janne Jokinen");
+                        o2.setEtunimi("Janne");
+                        o2.setSukunimi("Jokinen");
                         o2.setEmail("janne.jokinen@testi.fi");
                         o2.setErikoistuminen("Kehonpainotreeni");
                         o2.setPuhelin("0402222222");
 
                         Ohjaaja o3 = new Ohjaaja();
-                        o3.setNimi("Sari Salmi");
+                        o3.setEtunimi("Sari");
+                        o3.setSukunimi("Salmi");
                         o3.setEmail("sari.salmi@testi.fi");
                         o3.setErikoistuminen("Ryhmäliikunta");
                         o3.setPuhelin("0403333333");
@@ -198,7 +202,7 @@ public class TestDataInitializer {
                         Liikuntatunti t2 = new Liikuntatunti();
                         t2.setNimi("Aamun kehonhuolto");
                         t2.setTyyppi("Huolto");
-                        t2.setKapasiteetti(15);
+                        t2.setKapasiteetti(8);
                         t2.setAlkuaika(LocalDateTime.now().plusDays(2).withHour(9).withMinute(0));
                         t2.setLoppuaika(LocalDateTime.now().plusDays(2).withHour(10).withMinute(0));
                         t2.setOhjaaja(o3);
@@ -206,7 +210,7 @@ public class TestDataInitializer {
                         Liikuntatunti t3 = new Liikuntatunti();
                         t3.setNimi("Rentouttava jooga");
                         t3.setTyyppi("Jooga");
-                        t3.setKapasiteetti(18);
+                        t3.setKapasiteetti(6);
                         t3.setAlkuaika(LocalDateTime.now().plusDays(3).withHour(17).withMinute(30));
                         t3.setLoppuaika(LocalDateTime.now().plusDays(3).withHour(18).withMinute(45));
                         t3.setOhjaaja(o1);
@@ -214,7 +218,7 @@ public class TestDataInitializer {
                         Liikuntatunti t4 = new Liikuntatunti();
                         t4.setNimi("Kehonpainotreeni");
                         t4.setTyyppi("Kunto");
-                        t4.setKapasiteetti(25);
+                        t4.setKapasiteetti(3);
                         t4.setAlkuaika(LocalDateTime.now().plusDays(4).withHour(19).withMinute(0));
                         t4.setLoppuaika(LocalDateTime.now().plusDays(4).withHour(20).withMinute(0));
                         t4.setOhjaaja(o2);
@@ -222,7 +226,7 @@ public class TestDataInitializer {
                         Liikuntatunti t5 = new Liikuntatunti();
                         t5.setNimi("Ryhmäliikunta startti");
                         t5.setTyyppi("Ryhmä");
-                        t5.setKapasiteetti(30);
+                        t5.setKapasiteetti(10);
                         t5.setAlkuaika(LocalDateTime.now().plusDays(5).withHour(18).withMinute(0));
                         t5.setLoppuaika(LocalDateTime.now().plusDays(5).withHour(19).withMinute(15));
                         t5.setOhjaaja(o3);
@@ -232,6 +236,30 @@ public class TestDataInitializer {
                         liikuntatuntiService.save(t3);
                         liikuntatuntiService.save(t4);
                         liikuntatuntiService.save(t5);
+                        
+                        t1.getLiikkujat().add(l1);
+                        t1.getLiikkujat().add(l4);
+                        t2.getLiikkujat().add(l2);
+                        t3.getLiikkujat().add(l1);
+                        t3.getLiikkujat().add(l5);
+                        t4.getLiikkujat().add(l4);
+                        t5.getLiikkujat().add(l1);
+                        t5.getLiikkujat().add(l2);
+                        
+                        l1.getLiikuntatunnit().add(t1);
+                        l4.getLiikuntatunnit().add(t1);
+                        l2.getLiikuntatunnit().add(t2);
+                        l1.getLiikuntatunnit().add(t3);
+                        l5.getLiikuntatunnit().add(t3);
+                        l4.getLiikuntatunnit().add(t4);
+                        l1.getLiikuntatunnit().add(t5);
+                        l2.getLiikuntatunnit().add(t5);
+                        
+                        tuntiService.save(t1);
+                        tuntiService.save(t2);
+                        tuntiService.save(t3);
+                        tuntiService.save(t4);
+                        tuntiService.save(t5);
                 };
 
         }

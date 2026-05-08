@@ -51,7 +51,8 @@ public class OhjaajaListView extends VerticalLayout implements BeforeEnterObserv
         csv.append("nimi,email,erikoistuminen,puhelin\n");
 
         ohjaajaService.findAll().forEach(o -> {
-            csv.append(o.getNimi()).append(",")
+            csv.append(o.getEtunimi()).append(" ")
+                    .append(o.getSukunimi()).append(",")
                     .append(o.getEmail()).append(",")
                     .append(o.getErikoistuminen()).append(",")
                     .append(o.getPuhelin() != null ? o.getPuhelin() : "")
@@ -123,11 +124,12 @@ public class OhjaajaListView extends VerticalLayout implements BeforeEnterObserv
                         continue;
 
                     Ohjaaja o = new Ohjaaja();
-                    o.setNimi(parts[0].trim());
-                    o.setEmail(parts[1].trim());
-                    o.setErikoistuminen(parts[2].trim());
+                    o.setEtunimi(parts[0].trim());
+                    o.setSukunimi(parts[1].trim());
+                    o.setEmail(parts[2].trim());
+                    o.setErikoistuminen(parts[3].trim());
                     if (parts.length > 3) {
-                        o.setPuhelin(parts[3].trim());
+                        o.setPuhelin(parts[4].trim());
                     }
 
                     ohjaajaService.save(o);
@@ -155,7 +157,7 @@ public class OhjaajaListView extends VerticalLayout implements BeforeEnterObserv
     }
 
     private void configureGrid() {
-        grid.addColumn(Ohjaaja::getNimi)
+        grid.addColumn(o -> o.getEtunimi() + " " + o.getSukunimi())
                 .setHeader("Nimi")
                 .setAutoWidth(true);
 

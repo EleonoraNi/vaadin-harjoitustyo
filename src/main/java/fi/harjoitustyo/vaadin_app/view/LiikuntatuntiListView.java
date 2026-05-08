@@ -9,6 +9,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -93,7 +94,7 @@ public class LiikuntatuntiListView extends VerticalLayout implements BeforeEnter
 
                 // ✅ 1:N-relaatio näkyy UI:ssa (Ohjaaja)
                 grid.addColumn(tunti -> tunti.getOhjaaja() != null
-                                ? tunti.getOhjaaja().getNimi()
+                                ? tunti.getOhjaaja().getEtunimi() + " " + tunti.getOhjaaja().getSukunimi()
                                 : "-")
                                 .setHeader("Ohjaaja")
                                 .setAutoWidth(true);
@@ -105,6 +106,26 @@ public class LiikuntatuntiListView extends VerticalLayout implements BeforeEnter
                         return ilmoittautuneet + " / " + tunti.getKapasiteetti();
                 })
                                 .setHeader("Ilmoittautuneet")
+                                .setAutoWidth(true);
+
+                grid.addComponentColumn(tunti -> {
+
+                        String names = (tunti.getLiikkujat() == null || tunti.getLiikkujat().isEmpty())
+                                        ? "-"
+                                        : tunti.getLiikkujat().stream()
+                                                        .map(l -> l.getEtunimi() + " " + l.getSukunimi())
+                                                        .reduce((a, b) -> a + "<br>" + b)
+                                                        .orElse("-");
+
+                        // Span span = new Span(count + " / " + tunti.getKapasiteetti());
+                        // span.getElement().setProperty("title", names); // hover tooltip
+
+                        Span span = new Span();
+                        span.getElement().setProperty("innerHTML", names);
+                        return span;
+
+                })
+                                .setHeader("Nimet")
                                 .setAutoWidth(true);
 
                 grid.setSizeFull();

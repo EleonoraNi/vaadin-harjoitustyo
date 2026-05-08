@@ -15,8 +15,12 @@ public class Ohjaaja {
     private Long id;
 
     @NotBlank
-    @Size(min = 2, max = 80)
-    private String nimi;
+    @Size(min = 2, max = 50)
+    private String etunimi;
+
+    @NotBlank
+    @Size(min = 2, max = 50)
+    private String sukunimi;
 
     @Email
     @NotBlank
@@ -44,12 +48,20 @@ public class Ohjaaja {
         this.id = id;
     }
 
-    public String getNimi() {
-        return nimi;
+    public String getEtunimi() {
+        return etunimi;
     }
 
-    public void setNimi(String nimi) {
-        this.nimi = nimi;
+    public void setEtunimi(String etunimi) {
+        this.etunimi = etunimi;
+    }
+
+    public String getSukunimi() {
+        return sukunimi;
+    }
+
+    public void setSukunimi(String sukunimi) {
+        this.sukunimi = sukunimi;
     }
 
     public String getEmail() {

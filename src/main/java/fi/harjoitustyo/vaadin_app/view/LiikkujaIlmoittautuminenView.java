@@ -65,7 +65,7 @@ public class LiikkujaIlmoittautuminenView extends VerticalLayout implements Befo
         }).setHeader("Ajankohta").setAutoWidth(true);
 
         tuntiGrid.addColumn(tunti -> tunti.getOhjaaja() != null
-                ? tunti.getOhjaaja().getNimi()
+                ? tunti.getOhjaaja().getEtunimi() + " " + tunti.getOhjaaja().getSukunimi()
                 : "-").setHeader("Ohjaaja").setAutoWidth(true);
 
         tuntiGrid.addColumn(tunti -> {

@@ -165,8 +165,6 @@ public class LiikuntatuntiSearchView extends VerticalLayout
                         LocalDateTime loppu = loppuPaiva.getValue() != null
                                         ? loppuPaiva.getValue().atTime(23, 59)
                                         : null;
-
-                        String ohjaajaTekstiValue = ohjaajaTeksti.getValue();
                         
                         new Thread(() -> {
 
@@ -229,7 +227,7 @@ public class LiikuntatuntiSearchView extends VerticalLayout
                 }).setHeader(msg.getString("grid.time"));
 
                 grid.addColumn(t -> t.getOhjaaja() != null
-                                ? t.getOhjaaja().getNimi()
+                                ? t.getOhjaaja().getEtunimi() + " " + t.getOhjaaja().getSukunimi()
                                 : "").setHeader(msg.getString("grid.instructor"));
 
                 grid.addColumn(Liikuntatunti::getKapasiteetti)

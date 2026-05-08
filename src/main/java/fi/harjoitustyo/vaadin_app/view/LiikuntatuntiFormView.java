@@ -103,7 +103,7 @@ public class LiikuntatuntiFormView extends VerticalLayout
 
         // Ohjaaja ComboBox (1:N-relaatio UI:ssa)
         ohjaaja.setItems(ohjaajaService.findAll());
-        ohjaaja.setItemLabelGenerator(Ohjaaja::getNimi);
+        ohjaaja.setItemLabelGenerator(o -> o.getEtunimi() + " " + o.getSukunimi());
         ohjaaja.setClearButtonVisible(true);
         ohjaaja.setPlaceholder("Valitse ohjaaja");
 
