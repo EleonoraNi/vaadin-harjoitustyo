@@ -135,6 +135,8 @@ public class TestDataInitializer {
                         j1.setAlkamisPaiva(LocalDate.now().minusMonths(2));
                         j1.setPaattymisPaiva(LocalDate.now().plusMonths(6));
                         j1.setTaso(2);
+                        j1.setTyyppi("Kuntosali");
+                        j1.setKaupunki("Kuopio");
                         j1.setLiikkuja(l1);
                         l1.setJasenyys(j1);
 
@@ -149,6 +151,8 @@ public class TestDataInitializer {
                         j2.setAlkamisPaiva(LocalDate.now().minusYears(1));
                         j2.setPaattymisPaiva(LocalDate.now().minusDays(10));
                         j2.setTaso(1);
+                        j2.setTyyppi("Ryhmäliikunta");
+                        j2.setKaupunki("Iisalmi");
                         j2.setLiikkuja(l2);
                         l2.setJasenyys(j2);
 
@@ -170,6 +174,8 @@ public class TestDataInitializer {
                         j4.setAlkamisPaiva(LocalDate.now());
                         j4.setPaattymisPaiva(LocalDate.now().plusMonths(12));
                         j4.setTaso(3);
+                        j4.setTyyppi("Kuntosali + Ryhmäliikunta");
+                        j4.setKaupunki("Kuopio");
                         j4.setLiikkuja(l4);
                         l4.setJasenyys(j4);
 
