@@ -1,6 +1,5 @@
 package fi.harjoitustyo.vaadin_app.repository;
 
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.*;
@@ -11,7 +10,6 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import fi.harjoitustyo.vaadin_app.entity.Liikuntatunti;
-
 
 @Repository
 public class LiikuntatuntiRepositoryImpl
@@ -56,15 +54,18 @@ public class LiikuntatuntiRepositoryImpl
         }
 
         Join<Liikuntatunti, Object> ohjaajaJoin = null;
-        if ( (ohjaajaTeksti != null && !ohjaajaTeksti.isBlank())) {
+        if ((ohjaajaTeksti != null && !ohjaajaTeksti.isBlank())) {
             ohjaajaJoin = tunti.join("ohjaaja");
         }
 
         if (ohjaajaTeksti != null && !ohjaajaTeksti.isBlank()) {
             String likeOhjaaja = "%" + ohjaajaTeksti.toLowerCase() + "%";
-            Predicate nimiLike = cb.like(cb.lower(ohjaajaJoin.get("nimi")), likeOhjaaja);
+
+            Predicate etunimiLike = cb.like(cb.lower(ohjaajaJoin.get("etunimi")), likeOhjaaja);
+            Predicate sukunimiLike = cb.like(cb.lower(ohjaajaJoin.get("sukunimi")), likeOhjaaja);
+
             Predicate erikoistuminenLike = cb.like(cb.lower(ohjaajaJoin.get("erikoistuminen")), likeOhjaaja);
-            predicates.add(cb.or(nimiLike, erikoistuminenLike));
+            predicates.add(cb.or(etunimiLike,sukunimiLike, erikoistuminenLike));
         }
 
         cq.where(predicates.toArray(new Predicate[0]));
