@@ -119,17 +119,21 @@ public class OhjaajaListView extends VerticalLayout implements BeforeEnterObserv
                 String line;
                 while ((line = reader.readLine()) != null) {
                     String[] parts = line.split(",");
+                    String[] nimet = parts[0].split(" ", 2);
 
                     if (parts.length < 3)
                         continue;
 
                     Ohjaaja o = new Ohjaaja();
-                    o.setEtunimi(parts[0].trim());
-                    o.setSukunimi(parts[1].trim());
-                    o.setEmail(parts[2].trim());
-                    o.setErikoistuminen(parts[3].trim());
+
+                    o.setEtunimi(nimet[0]);
+                    o.setSukunimi(nimet.length > 1 ? nimet[1] : "");
+
+                    o.setEmail(parts[1].trim());
+                    o.setErikoistuminen(parts[2].trim());
+
                     if (parts.length > 3) {
-                        o.setPuhelin(parts[4].trim());
+                        o.setPuhelin(parts[3].trim());
                     }
 
                     ohjaajaService.save(o);

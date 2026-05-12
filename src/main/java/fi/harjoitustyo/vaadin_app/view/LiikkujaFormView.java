@@ -170,6 +170,10 @@ public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<
                 j.setKaupunki(jasenyysKaupunki.getValue());
 
                 current.setJasenyys(j);
+
+            } else {
+                // 🔴 TÄRKEÄ: poista jäsenyys
+                current.setJasenyys(null);
             }
 
             liikkujaService.save(current);

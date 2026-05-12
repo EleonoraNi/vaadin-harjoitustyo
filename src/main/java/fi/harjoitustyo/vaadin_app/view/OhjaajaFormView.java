@@ -45,7 +45,8 @@ public class OhjaajaFormView extends VerticalLayout
     private Ohjaaja current;
 
     // Kentät
-    private final TextField nimi = new TextField("Nimi");
+    private final TextField etunimi= new TextField("Etunimi");
+    private final TextField sukunimi = new TextField("Sukunimi");
     private final EmailField email = new EmailField("Email");
     private final TextField erikoistuminen = new TextField("Erikoistuminen");
     private final TextField puhelin = new TextField("Puhelin");
@@ -182,7 +183,7 @@ public class OhjaajaFormView extends VerticalLayout
         form.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("0", 1),
                 new FormLayout.ResponsiveStep("600px", 2));
-        form.add(nimi, email, erikoistuminen, puhelin);
+        form.add(etunimi,sukunimi, email, erikoistuminen, puhelin);
         form.setMaxWidth("800px");
         return form;
     }

@@ -38,7 +38,7 @@ public class Liikkuja {
     private String puhelin;
 
     // 1:1 Jäsenyys
-    @OneToOne(mappedBy = "liikkuja", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "liikkuja", cascade = CascadeType.ALL, orphanRemoval = true)
     private Jasenyys jasenyys;
 
     // M:N Liikuntatunnit
