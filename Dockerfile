@@ -1,24 +1,7 @@
-# --- Build-vaihe ---
-FROM maven:3.9.6-eclipse-temurin-21 AS build
-WORKDIR /app
+FROM eclipse-temurin:21-jdk
 
-# Kopioidaan pom ja ladataan riippuvuudet
-COPY pom.xml .
-RUN mvn dependency:go-offline
+VOLUME /tmp
 
-# Kopioidaan lähdekoodi ja rakennetaan sovellus
-COPY src ./src
-RUN mvn clean package -DskipTests
+COPY target/vaadin-app-0.0.1-SNAPSHOT.jar app.jar
 
-# --- Runtime-vaihe ---
-FROM eclipse-temurin:21-jre
-WORKDIR /app
-
-# Kopioidaan rakennettu jar build-vaiheesta
-COPY --from=build /app/target/*.jar app.jar
-
-# Spring Boot käyttää porttia 8080
-EXPOSE 8080
-
-# Käynnistetään sovellus
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java","-jar","/app.jar"]
