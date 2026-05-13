@@ -118,7 +118,6 @@ public class TestDataInitializer {
                         ohjaajaService.save(o2);
                         ohjaajaService.save(o3);
 
-
                         /*
                          * =========================
                          * LIIKKUJAT (5 kpl)
@@ -206,7 +205,7 @@ public class TestDataInitializer {
                         t1.setOhjaaja(o1);
 
                         Liikuntatunti t2 = new Liikuntatunti();
-                        t2.setNimi("Aamun kehonhuolto");
+                        t2.setNimi("Aamun lempeä jumppa");
                         t2.setTyyppi("Huolto");
                         t2.setKapasiteetti(8);
                         t2.setAlkuaika(LocalDateTime.now().plusDays(2).withHour(9).withMinute(0));
@@ -214,7 +213,7 @@ public class TestDataInitializer {
                         t2.setOhjaaja(o3);
 
                         Liikuntatunti t3 = new Liikuntatunti();
-                        t3.setNimi("Rentouttava jooga");
+                        t3.setNimi("Rentouttava voimistelu");
                         t3.setTyyppi("Jooga");
                         t3.setKapasiteetti(6);
                         t3.setAlkuaika(LocalDateTime.now().plusDays(3).withHour(17).withMinute(30));
@@ -222,7 +221,7 @@ public class TestDataInitializer {
                         t3.setOhjaaja(o1);
 
                         Liikuntatunti t4 = new Liikuntatunti();
-                        t4.setNimi("Kehonpainotreeni");
+                        t4.setNimi("Tehoa painoilla");
                         t4.setTyyppi("Kunto");
                         t4.setKapasiteetti(3);
                         t4.setAlkuaika(LocalDateTime.now().plusDays(4).withHour(19).withMinute(0));
@@ -230,19 +229,29 @@ public class TestDataInitializer {
                         t4.setOhjaaja(o2);
 
                         Liikuntatunti t5 = new Liikuntatunti();
-                        t5.setNimi("Ryhmäliikunta startti");
-                        t5.setTyyppi("Ryhmä");
+                        t5.setNimi("Ryhmäliikunta tehostartti");
+                        t5.setTyyppi("Syke");
                         t5.setKapasiteetti(10);
                         t5.setAlkuaika(LocalDateTime.now().plusDays(5).withHour(18).withMinute(0));
                         t5.setLoppuaika(LocalDateTime.now().plusDays(5).withHour(19).withMinute(15));
                         t5.setOhjaaja(o3);
 
+                        Liikuntatunti t6 = new Liikuntatunti();
+                        t6.setNimi("Pumppin alkeet");
+                        t6.setTyyppi("Teho");
+                        t6.setKapasiteetti(5);
+                        t6.setAlkuaika(LocalDateTime.now().plusDays(6).withHour(17).withMinute(0));
+                        t6.setLoppuaika(LocalDateTime.now().plusDays(6).withHour(18).withMinute(0));
+                        t6.setOhjaaja(o2);
+                        
+                        
                         liikuntatuntiService.save(t1);
                         liikuntatuntiService.save(t2);
                         liikuntatuntiService.save(t3);
                         liikuntatuntiService.save(t4);
                         liikuntatuntiService.save(t5);
-                        
+                        liikuntatuntiService.save(t6);
+
                         t1.getLiikkujat().add(l1);
                         t1.getLiikkujat().add(l4);
                         t2.getLiikkujat().add(l2);
@@ -251,7 +260,7 @@ public class TestDataInitializer {
                         t4.getLiikkujat().add(l4);
                         t5.getLiikkujat().add(l1);
                         t5.getLiikkujat().add(l2);
-                        
+
                         l1.getLiikuntatunnit().add(t1);
                         l4.getLiikuntatunnit().add(t1);
                         l2.getLiikuntatunnit().add(t2);
@@ -260,7 +269,7 @@ public class TestDataInitializer {
                         l4.getLiikuntatunnit().add(t4);
                         l1.getLiikuntatunnit().add(t5);
                         l2.getLiikuntatunnit().add(t5);
-                        
+
                         tuntiService.save(t1);
                         tuntiService.save(t2);
                         tuntiService.save(t3);

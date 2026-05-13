@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import fi.harjoitustyo.vaadin_app.entity.Liikkuja;
 import java.time.LocalDate;
 
-@Route("register")
+@Route(value ="register", layout = MainLayout.class)
 @PageTitle("Rekisteröidy")
 public class RegisterView extends VerticalLayout {
 
