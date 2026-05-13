@@ -69,11 +69,11 @@ public class Jasenyys {
         this.paattymisPaiva = paattymisPaiva;
     }
 
-    public int getTaso() {
+    public Integer getTaso() {
         return taso;
     }
 
-    public void setTaso(int taso) {
+    public void setTaso(Integer taso) {
         this.taso = taso;
     }
         public String getTyyppi() {

@@ -34,6 +34,8 @@ public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<
 
     private final BeanValidationBinder<Liikkuja> binder = new BeanValidationBinder<>(Liikkuja.class);
 
+    private final BeanValidationBinder<Jasenyys> jasenyysBinder = new BeanValidationBinder<>(Jasenyys.class);
+
     private Liikkuja current;
 
     // Kentät – nimien pitää täsmätä Liikkuja-propertyihin
@@ -92,19 +94,10 @@ public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<
 
         binder.readBean(current);
 
-        // ✅ TÄMÄ TÄNNE (oikea paikka!)
         if (current.getJasenyys() != null) {
-            Jasenyys j = current.getJasenyys();
-
-            jasenyysAlku.setValue(j.getAlkamisPaiva());
-            jasenyysLoppu.setValue(j.getPaattymisPaiva());
-            jasenyysTaso.setValue(String.valueOf(j.getTaso()));
-            jasenyysTyyppi.setValue(j.getTyyppi());
-            jasenyysKaupunki.setValue(j.getKaupunki());
+            jasenyysBinder.readBean(current.getJasenyys());
         } else {
-            jasenyysAlku.clear();
-            jasenyysLoppu.clear();
-            jasenyysTaso.clear();
+            jasenyysBinder.readBean(new Jasenyys());
         }
 
         poista.setEnabled(current.getId() != null);
@@ -113,8 +106,20 @@ public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<
     private void configureForm() {
         binder.bindInstanceFields(this);
 
+        jasenyysBinder.bind(jasenyysAlku, "alkamisPaiva");
+        jasenyysBinder.bind(jasenyysLoppu, "paattymisPaiva");
+
+        jasenyysBinder.forField(jasenyysTaso)
+                .withConverter(
+                        value -> value == null || value.isBlank() ? null : Integer.valueOf(value),
+                        value -> value == null ? "" : value.toString(),
+                        "Anna numero 1–3")
+                .bind("taso");
+
+        jasenyysBinder.bind(jasenyysTyyppi, "tyyppi");
+        jasenyysBinder.bind(jasenyysKaupunki, "kaupunki");
+
         email.setClearButtonVisible(true);
-        email.setErrorMessage("Syötä kelvollinen sähköposti");
 
         tallenna.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         poista.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -148,31 +153,20 @@ public class LiikkujaFormView extends VerticalLayout implements HasUrlParameter<
         try {
             binder.writeBean(current); // tämä täyttää vain Liikkuja
 
-            // ✅ TÄRKEÄ: käsittele jäsenyys erikseen
             if (jasenyysTaso.getValue() != null && !jasenyysTaso.getValue().isBlank()) {
 
-                if (jasenyysAlku.getValue() == null || jasenyysLoppu.getValue() == null) {
-                    Notification.show("Täytä jäsenyyden päivämäärät");
-                    return;
-                }
-
                 Jasenyys j = current.getJasenyys();
-
                 if (j == null) {
                     j = new Jasenyys();
                     j.setLiikkuja(current);
                 }
 
-                j.setAlkamisPaiva(jasenyysAlku.getValue());
-                j.setPaattymisPaiva(jasenyysLoppu.getValue());
-                j.setTaso(Integer.parseInt(jasenyysTaso.getValue()));
-                j.setTyyppi(jasenyysTyyppi.getValue());
-                j.setKaupunki(jasenyysKaupunki.getValue());
+                jasenyysBinder.writeBean(j); // ✅ TÄMÄ laukoo UI-validoinnin
 
                 current.setJasenyys(j);
 
             } else {
-                // 🔴 TÄRKEÄ: poista jäsenyys
+                // ✅ sallii pelkän liikkujan tallennuksen
                 current.setJasenyys(null);
             }
 

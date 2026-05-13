@@ -31,7 +31,7 @@ import org.springframework.security.core.Authentication;
 
 @PageTitle("Liikuntatunti")
 @Route(value = "liikuntatunti", layout = MainLayout.class)
-@RolesAllowed({"SUPER"})
+@RolesAllowed({ "SUPER" })
 public class LiikuntatuntiFormView extends VerticalLayout
         implements HasUrlParameter<Long>, BeforeEnterObserver {
 
@@ -108,18 +108,43 @@ public class LiikuntatuntiFormView extends VerticalLayout
         ohjaaja.setPlaceholder("Valitse ohjaaja");
 
         binder.forField(nimi)
+                .withValidator(n -> n != null && !n.trim().isEmpty(),
+                        "Nimi on pakollinen")
                 .bind(Liikuntatunti::getNimi, Liikuntatunti::setNimi);
 
         binder.forField(tyyppi)
+                .withValidator(t -> t != null && !t.trim().isEmpty(),
+                        "Tyyppi on pakollinen")
                 .bind(Liikuntatunti::getTyyppi, Liikuntatunti::setTyyppi);
 
         binder.forField(kapasiteetti)
+                .asRequired("Kapasiteetti on pakollinen")
+                .withValidator(k -> k != null && k >= 1 && k <= 30,
+                        "Kapasiteetin oltava 1–30")
                 .bind(Liikuntatunti::getKapasiteetti, Liikuntatunti::setKapasiteetti);
 
-        // Ohjaaja sidotaan käsin
         binder.forField(ohjaaja)
                 .bind(Liikuntatunti::getOhjaaja,
                         Liikuntatunti::setOhjaaja);
+
+        binder.forField(paiva)
+                .withValidator(Objects::nonNull, "Valitse päivä")
+                .bind(
+                        tunti -> tunti.getAlkuaika() != null
+                                ? tunti.getAlkuaika().toLocalDate()
+                                : null,
+                        (tunti, date) -> {
+                            if (date != null) {
+                                if (tunti.getAlkuaika() != null) {
+                                    tunti.setAlkuaika(
+                                            LocalDateTime.of(date, tunti.getAlkuaika().toLocalTime()));
+                                }
+                                if (tunti.getLoppuaika() != null) {
+                                    tunti.setLoppuaika(
+                                            LocalDateTime.of(date, tunti.getLoppuaika().toLocalTime()));
+                                }
+                            }
+                        });
 
         binder.forField(alkuaika)
                 .withValidator(Objects::nonNull, "Valitse alkuaika")
@@ -220,11 +245,12 @@ public class LiikuntatuntiFormView extends VerticalLayout
                     Notification.Position.MIDDLE);
         }
     }
+
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getAuthorities().stream().noneMatch(authority ->
-                authority.getAuthority().equals("ROLE_SUPER"))) {
+        if (authentication == null || authentication.getAuthorities().stream()
+                .noneMatch(authority -> authority.getAuthority().equals("ROLE_SUPER"))) {
             event.rerouteTo(AccessDeniedView.class);
         }
     }
