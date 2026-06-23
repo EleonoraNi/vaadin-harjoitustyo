@@ -14,14 +14,19 @@ Projekti keskittyy tietokantamallinnukseen, CRUD-toimintoihin, autentikointiin j
 ## Kuvakaappauksia
 
 ### Liikuntatuntien listaus
-![Liikuntatuntien listaus](liikuntatuntilistaus.png)
+<img src="liikuntatuntilistaus.png" width="600">
+
+*Liikuntatuntien listaus ja osallistujatiedot*
 
 ### Liikuntatunnin lisäys ja muokkaus
-![Lomake](Lomake.png)
+<img src="Lomake.png" width="600">
+
+*Lomake liikuntatuntien lisäykseen ja muokkaukseen*
 
 ### Sovelluksen yleisilme
-![Yleisilme](UI-yleisilme.png)
+<img src="UI-yleisilme.png" width="600">
 
+*Sovelluksen aloitusnäkymä*
 
 ---
 
