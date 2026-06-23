@@ -82,4 +82,5 @@ Eleonora Niskanen
 
 Laajempi tekninen raportti (sisältää yksityiskohtaiset kuvaukset ja kaikki kuvakaappaukset):
 
-➡️ Vaadin_harjoitustyoraportti_niskanen_eleonora.pdf
+[📄 Avaa tekninen raportti (PDF)](Vaadin_harjoitustyoraportti_niskanen_eleonora.pdf)
+
