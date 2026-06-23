@@ -1,3 +1,5 @@
+Tämä projekti on osa ohjelmistokehittäjäportfoliotani.
+
 # Liikuntakeskus-sovellus (Vaadin + Spring Boot)
 
 Tämä projekti on Savonia-ammattikorkeakoulun Java web-ohjelmointi -kurssin harjoitustyö.  
