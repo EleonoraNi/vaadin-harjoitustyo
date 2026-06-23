@@ -1,26 +1,76 @@
-# Vaadin-harjoitustyö
+# Liikuntakeskus-sovellus (Vaadin + Spring Boot)
 
-Tämä projekti on Savonia-ammattikorkeakoulun Java web-ohjelmointi ‑kurssin Vaadin–Spring Boot ‑harjoitustyö. Sovellus on toteutettu Vaadin Flow ‑käyttöliittymällä ja Spring Boot ‑taustalla kerrosarkkitehtuuria noudattaen.
+Tämä projekti on Savonia-ammattikorkeakoulun Java web-ohjelmointi -kurssin harjoitustyö.  
+Sovellus on liikuntakeskuksen hallintajärjestelmä, jossa voidaan hallita liikkujien tietoja, jäsenyyksiä, liikuntatunteja ja ohjaajia.
+
+## Projektin tarkoitus
+
+Tavoitteena oli toteuttaa full stack -web-sovellus käyttäen Spring Boot -taustajärjestelmää ja Vaadin Flow -käyttöliittymää.  
+Projekti keskittyy tietokantamallinnukseen, CRUD-toimintoihin, autentikointiin ja käyttöliittymäsuunnitteluun.
+
+---
+
+## Kuvakaappauksia
+
+### Liikuntatuntien listaus
+![Liikuntatuntien listaus] (liikuntatuntilistaus.png) (Image: taulukko liikuntatunneista ja osallistujista)
+
+### Liikuntatunnin lisäys ja muokkaus
+imageLomake.png (Image: lomake uuden liikuntatunnin syöttämiseen)
+
+### Sovelluksen yleisilme
+imageUI -yleisilme.png (Image: sovelluksen etusivu ja navigaatiorakenne)
+
+---
+
+## Toiminnallisuudet
+
+- CRUD-toiminnot kaikille entiteeteille
+- Autentikointi ja kirjautuminen (Spring Security)
+- Roolipohjainen käyttöoikeushallinta (USER, SUPER, ADMIN)
+- Rekisteröityminen
+- Dynaaminen haku (Criteria API)
+- CSV-datan tuonti ja vienti
+- Tiedoston lataus ja tallennus
+- Lokalisaatio (suomi / englanti)
+- Vaadin Server Push
+- Ulkoisen JavaScript-komponentin integrointi (Quill.js)
+
+---
 
 ## Teknologiat
+
+### Backend
 - Java
 - Spring Boot
 - Spring Data JPA
 - Spring Security
+
+### Frontend
 - Vaadin Flow
+
+### Tietokanta
 - Hibernate / JPA
+
+### Muut
 - Maven
 - Docker
 
-## Toiminnallisuudet
-Sovellus sisältää neljä entiteettiä: Liikkuja, Jäsenyys, Liikuntatunti ja Ohjaaja. Entiteettien välille on toteutettu 1:1-, 1:N- ja M:N‑relaatiot, ja kaikki CRUD‑toiminnot toimivat käyttöliittymästä tietokantaan asti. Kenttien validointi on toteutettu Jakarta Validation ‑annotaatioilla.
-
-Sovelluksessa on Spring Securityyn perustuva autentikointi ja roolipohjainen käyttöoikeuksien hallinta (USER, SUPER, ADMIN), rekisteröitymissivu sekä kustomoitu käyttöoikeusvirhenäkymä. Liikuntatunneille on toteutettu dynaaminen haku JPA Criteria APIa käyttäen.
-
-Lisätoiminnallisuuksiin kuuluvat CSV‑datan tuonti ja vienti, tiedoston lataus ja pysyvä tallennus, lokalisointi (suomi/englanti), Vaadin Server Push, Dockerfile sekä ulkoisen JavaScript‑komponentin (Quill.js) integrointi.
+---
 
 ## Käynnistys
-Sovellus voidaan käynnistää paikallisesti Mavenilla tai ajaa Docker‑kontissa Dockerfilen avulla. Oletusportti on 8080.
+
+### Paikallisesti (Maven)
+```bash
+mvn spring-boot:run
+```
 
 ## Tekijä
 Eleonora Niskanen
+
+
+## Dokumentaatio
+
+Laajempi tekninen raportti (sisältää yksityiskohtaiset kuvaukset ja kaikki kuvakaappaukset):
+
+➡️ Vaadin_harjoitustyoraportti_niskanen_eleonora.pdf
