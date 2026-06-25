@@ -1,86 +1,94 @@
-Tämä projekti on osa ohjelmistokehittäjäportfoliotani.
 
-# Liikuntakeskus-sovellus (Vaadin + Spring Boot)
+# Gym Management Application (Vaadin + Spring Boot)
 
-Tämä projekti on Savonia-ammattikorkeakoulun Java web-ohjelmointi -kurssin harjoitustyö.  
-Sovellus on liikuntakeskuksen hallintajärjestelmä, jossa voidaan hallita liikkujien tietoja, jäsenyyksiä, liikuntatunteja ja ohjaajia.
+This project is part of my software developer portfolio.
 
-## Projektin tarkoitus
-
-Tavoitteena oli toteuttaa full stack -web-sovellus käyttäen Spring Boot -taustajärjestelmää ja Vaadin Flow -käyttöliittymää.  
-Projekti keskittyy tietokantamallinnukseen, CRUD-toimintoihin, autentikointiin ja käyttöliittymäsuunnitteluun.
+This application was developed as an assignment for the **Java Web Programming course at Savonia University of Applied Sciences**.  
+It is a gym management system designed for managing customer data, memberships, fitness classes, and instructors.
 
 ---
 
+## 🎯 Project Purpose
 
-## Kuvakaappauksia
+The goal of this project was to build a **full-stack web application** using:
+- **Spring Boot** for the backend
+- **Vaadin Flow** for the frontend
 
-### Liikuntatuntien listaus
+The project focuses on:
+- Database modeling  
+- CRUD operations  
+- Authentication  
+- UI design  
+
+---
+
+## 📸 Screenshots
+
+### Class Listings  
 <img src="liikuntatuntilistaus.png" width="600">
+Overview of available fitness classes   
 
-*Liikuntatuntien listaus ja osallistujatiedot*
-
-### Liikuntatunnin lisäys ja muokkaus
+### Add and Edit Classes
 <img src="Lomake.png" width="600">
+Form for creating and editing fitness classes  
 
-*Lomake liikuntatuntien lisäykseen ja muokkaukseen*
-
-### Sovelluksen yleisilme
+### Application Overview  
 <img src="UI-yleisilme.png" width="600">
+Main application dashboard / homepage  
 
-*Sovelluksen aloitusnäkymä*
-
----
-
-## Toiminnallisuudet
-
-- CRUD-toiminnot kaikille entiteeteille
-- Autentikointi ja kirjautuminen (Spring Security)
-- Roolipohjainen käyttöoikeushallinta (USER, SUPER, ADMIN)
-- Rekisteröityminen
-- Dynaaminen haku (Criteria API)
-- CSV-datan tuonti ja vienti
-- Tiedoston lataus ja tallennus
-- Lokalisaatio (suomi / englanti)
-- Vaadin Server Push
-- Ulkoisen JavaScript-komponentin integrointi (Quill.js)
 
 ---
 
-## Teknologiat
+## ⚙️ Features
+
+- CRUD operations for all entities  
+- Authentication and login (Spring Security)  
+- Role-based access control (USER, SUPER, ADMIN)  
+- User registration  
+- Dynamic search (Criteria API)  
+- CSV import and export  
+- File upload and storage  
+- Localization (Finnish / English)  
+- Vaadin Server Push  
+- Integration of an external JavaScript component (Quill.js)  
+
+---
+
+## 🧰 Technologies
 
 ### Backend
-- Java
-- Spring Boot
-- Spring Data JPA
-- Spring Security
+- Java  
+- Spring Boot  
+- Spring Data JPA  
+- Spring Security  
 
 ### Frontend
-- Vaadin Flow
+- Vaadin Flow  
 
-### Tietokanta
-- Hibernate / JPA
+### Database
+- Hibernate / JPA  
 
-### Muut
-- Maven
-- Docker
+### Other Tools
+- Maven  
+- Docker  
 
 ---
 
-## Käynnistys
+## ▶️ Running the Application
 
-### Paikallisesti (Maven)
+### Run locally (Maven)
+
 ```bash
 mvn spring-boot:run
 ```
 
-## Tekijä
+## Author
 Eleonora Niskanen
 
 
-## Dokumentaatio
+## Documentation
 
-Laajempi tekninen raportti (sisältää yksityiskohtaiset kuvaukset ja kaikki kuvakaappaukset):
+A more detailed technical report (including full descriptions and all screenshots):
 
-[📄 Avaa tekninen raportti (PDF)](Vaadin_harjoitustyoraportti_niskanen_eleonora.pdf)
+[📄 Open technical report (PDF)](Vaadin_harjoitustyoraportti_niskanen_eleonora.pdf)
 
